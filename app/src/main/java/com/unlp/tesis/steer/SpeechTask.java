@@ -1,9 +1,15 @@
 package com.unlp.tesis.steer;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
+import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -51,7 +57,8 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (result.get(0).equals("estacionar")) {
-                        Toast.makeText(context, "Estacionar correcto", Toast.LENGTH_LONG).show();
+                        this.sendNotification();
+                        //Toast.makeText(context, "Estacionar correcto", Toast.LENGTH_LONG).show();
                     }
                     else {
                         Toast.makeText(context, "Comando " + result.get(0) + " incorrecto", Toast.LENGTH_SHORT).show();
@@ -61,6 +68,51 @@ public class SpeechTask extends AsyncTask<String, String, String> {
             }
 
         }
+    }
+
+    /**
+     * Send simple notification using the NotificationCompat API.
+     * //TODO Datos harcodeados de testing
+     */
+    public void sendNotification() {
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this.context)
+                .setMessage("Saldo restante: $50");
+
+        TextView title =  new TextView(this.context);
+        title.setText("Estacionamiento Iniciado");
+        title.setGravity(Gravity.CENTER);
+        title.setTextSize(40);
+        title.setBackgroundColor(Color.parseColor("#8bc34a"));
+        title.setTextColor(Color.BLACK);
+        dialog.setCustomTitle(title);
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+
+        TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
+        textMessageView.setTextSize(30);
+
+        // Hide after some seconds
+        final Handler handler  = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (alert.isShowing()) {
+                    alert.dismiss();
+                }
+            }
+        };
+
+        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                handler.removeCallbacks(runnable);
+            }
+        });
+
+        handler.postDelayed(runnable, 7000);
+
     }
 
     public int getRequestCode() {
