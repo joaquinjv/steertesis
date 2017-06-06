@@ -1,7 +1,7 @@
 package com.unlp.tesis.steer.entities;
 
 /**
- * Created by pedro on 18/10/16.
+ * Created by pedro on 18/10/16. Modificado 30/05
  */
 
 public class Alert {
@@ -14,6 +14,7 @@ public class Alert {
     }
 
     public Alert(String description, float latitude, float longitude) {
+
         Description = description;
         Latitude = latitude;
         Longitude = longitude;
