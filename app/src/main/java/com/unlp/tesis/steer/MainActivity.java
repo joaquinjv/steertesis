@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-       // this.setPointOfSales();
+        this.setPointOfSales();
     }
 
     /**
