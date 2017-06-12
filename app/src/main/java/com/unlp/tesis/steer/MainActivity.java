@@ -32,12 +32,20 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.unlp.tesis.steer.entities.PointOfSale;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements
@@ -61,6 +69,11 @@ public class MainActivity extends AppCompatActivity implements
 
     //Google Map
     private GoogleMap mMap;
+
+    /**
+     * The list of points of sales markers used in this sample.
+     */
+    private List<Marker> pointOfSalesMarkers = new ArrayList<Marker>();
 
     // Monitors the state of the connection to the service.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -316,6 +329,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+       // this.setPointOfSales();
     }
 
     /**
@@ -326,4 +340,39 @@ public class MainActivity extends AppCompatActivity implements
         return location == null ? "Unknown location" :
                 "(" + location.getLatitude() + ", " + location.getLongitude() + ")";
     }
+
+
+    private void setPointOfSales() {
+        DatabaseReference dbRef =
+                FirebaseDatabase.getInstance().getReference().child("pointOfSales");
+        dbRef.addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Log.e(TAG, "dataChange reading db");
+                            // Get Post object and use the values to update the UI
+                            PointOfSale pos = ds.getValue(PointOfSale.class);
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    .position(new LatLng(pos.getLatitude(), pos.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                    .title(pos.getName())
+                                    .snippet(pos.getDetails());
+                            if (mMap != null) {
+                                // Remove last geoFenceMarker
+                                //if (geoFenceMarker != null)
+                                //    geoFenceMarker.remove();
+                                pointOfSalesMarkers.add(mMap.addMarker(markerOptions));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "Error reading db");
+                    }
+                }
+        );
+    }
+
 }
