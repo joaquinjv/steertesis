@@ -1,5 +1,56 @@
 apply plugin: 'com.android.application'
 
+def generateSelfSignedCertificate(version){
+    def buildType = version == "release" ? "assembleRelease": "assembleDebug"
+    def rerunAssemble = true
+    def projectLocation = projectDir.toString()
+    def certGeneratorLocation = "certificategenerator-android-studio.jar"
+    def certXmlLocation = projectLocation + "/certificate.xml"
+    def certificateDestination = projectLocation + "/src/main/assets/self-signed.ccc.crt"
+    def certificateFolder = projectLocation + "/src/main/assets/"
+    def certificateIssuer = "CN=Name"
+    def developerId = "600473c5448f68f38614a6c0c31324aa90bafa28"
+    def apkLocation = ""
+    android.applicationVariants.all { variant ->
+        if ((variant.name).equals(version)) {
+            variant.outputs.each { output ->
+                apkLocation = output.outputFile
+            }
+        }
+    }
+
+    if (project.hasProperty("isLast")) {
+        rerunAssemble = !isLast
+    }
+
+
+    if (rerunAssemble) {
+        def subdir = new File(certificateFolder)
+        if( !subdir.exists() ) {
+            subdir.mkdirs()
+        }
+        exec {
+            executable 'java'
+            args "-jar", certGeneratorLocation, "generate-certificate", apkLocation,
+                    android.defaultConfig.applicationId, android.defaultConfig.versionCode,
+                    certXmlLocation, certificateDestination, certificateIssuer, developerId
+        }
+        if (System.properties['os.name'].toLowerCase().contains("windows")) {
+            exec {
+                executable "cmd"
+                workingDir projectLocation
+                args  "/c", "..\\gradlew.bat", buildType, "-PisLast=true"
+            }
+        } else {
+            exec {
+                executable "bash"
+                workingDir projectLocation
+                args "../gradlew", buildType, "-PisLast=true"
+            }
+        }
+    }
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -9,8 +60,28 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    afterEvaluate {
+        if (this.hasProperty("assembleDebug")) {
+            assembleDebug.finalizedBy generateSelfSignedCertificateForDebug
+        }
+
+        if (this.hasProperty("assembleRelease")){
+            assembleRelease.finalizedBy generateSelfSignedCertificateForRelase
+        }
+    }
+
+    task generateSelfSignedCertificateForDebug << {
+        generateSelfSignedCertificate("debug")
+    }
+
+    task generateSelfSignedCertificateForRelase << {
+        generateSelfSignedCertificate("release")
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -19,16 +90,29 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
+    compile 'com.android.support:multidex:1.0.1'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
     //compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    //compile "com.android.support:design:25.3.1"
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.android.gms:play-services-maps:10.2.1'
     compile 'com.google.android.gms:play-services-location:10.2.1'
-    //compile "com.android.support:design:25.3.1"
-    compile "com.android.support:design:25.3.1"
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.google.firebase:firebase-database:10.2.1'
+    compile(name:'mirrorlink-library', ext:'aar')
     testCompile 'junit:junit:4.12'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

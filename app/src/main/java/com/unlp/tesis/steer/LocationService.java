@@ -189,6 +189,18 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onDestroy() {
+        try {
+            // Remove geofences.
+            LocationServices.GeofencingApi.removeGeofences(
+                    mGoogleApiClient,
+                    // This is the same pending intent that was used in addGeofences().
+                    getGeofencePendingIntent()
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+            logSecurityException(securityException);
+        }
+
         mServiceHandler.removeCallbacksAndMessages(null);
 
         if (mGoogleApiClient.isConnected())
