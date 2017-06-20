@@ -51,14 +51,15 @@ public class SpeechTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String resultExcecute) {
 
         switch (requestCode) {
+            // Always the result come from the Speech is 100
             case 100: {
                 if (resultCode == RESULT_OK && null != data) {
-
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    // If for example the user said "estacionar" in Voice Recognizer
                     if (result.get(0).equals("estacionar")) {
-                        this.sendNotification();
-                        //Toast.makeText(context, "Estacionar correcto", Toast.LENGTH_LONG).show();
+                        // We call the parking start task
+                        new RequestParkingStartTask(this.context).execute("");
                     }
                     else {
                         Toast.makeText(context, "Comando " + result.get(0) + " incorrecto", Toast.LENGTH_SHORT).show();

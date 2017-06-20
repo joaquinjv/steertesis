@@ -67,8 +67,13 @@ public class MainActivity extends AppCompatActivity implements
     // Tracks the bound state of the service.
     private boolean mBound = false;
 
+    // Tracks the bound state of the service.
+    private String token;
+
     //Google Map
     private GoogleMap mMap;
+
+    public static SingletonVo singletonVo = SingletonVo.getInstance();
 
     /**
      * The list of points of sales markers used in this sample.
@@ -118,6 +123,12 @@ public class MainActivity extends AppCompatActivity implements
                 startVoiceRecognitionActivity();
             }
         });
+
+        new RequestLoginTask(this).execute("");
+    }
+
+    public void startVoiceRecognitionActivity2() {
+        new RequestParkingStartTask(this).execute("");
     }
 
     /**
@@ -288,9 +299,6 @@ public class MainActivity extends AppCompatActivity implements
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
             if (location != null) {
-                Toast.makeText(MainActivity.this, getLocationText(location),
-                        Toast.LENGTH_SHORT).show();
-
 
                 if (mMap != null) {
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -373,6 +381,14 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
         );
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }
