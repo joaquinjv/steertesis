@@ -127,10 +127,6 @@ public class MainActivity extends AppCompatActivity implements
         new RequestLoginTask(this).execute("");
     }
 
-    public void startVoiceRecognitionActivity2() {
-        new RequestParkingStartTask(this).execute("");
-    }
-
     /**
      * Metodo que aplica el reconocimiento de voz y envía un resultado al Activity
      */

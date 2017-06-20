@@ -53,13 +53,29 @@ public class SpeechTask extends AsyncTask<String, String, String> {
         switch (requestCode) {
             // Always the result come from the Speech is 100
             case 100: {
+                Boolean match = Boolean.FALSE;
+                String serviceString = null;
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     // If for example the user said "estacionar" in Voice Recognizer
                     if (result.get(0).equals("estacionar")) {
-                        // We call the parking start task
-                        new RequestParkingStartTask(this.context).execute("");
+                        // We set service to call start parking
+                        match = Boolean.TRUE;
+                        serviceString = "iniciarEstacionamiento";
+                    }
+                    if (result.get(0).equals("fin")) {
+                        // We set service to call end parking
+                        match = Boolean.TRUE;
+                        serviceString = "finalizarEstacionamiento";
+                    }
+                    if (result.get(0).equals("estado")) {
+                        // We set service to call getStatus
+                        match = Boolean.TRUE;
+                        serviceString = "consultarEstado";
+                    }
+                    if (match){
+                        new RequestServiceTask(this.context).execute(serviceString);
                     }
                     else {
                         Toast.makeText(context, "Comando " + result.get(0) + " incorrecto", Toast.LENGTH_SHORT).show();

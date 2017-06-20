@@ -3,6 +3,10 @@ package com.unlp.tesis.steer;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.unlp.tesis.steer.utils.MessagesUtils;
+
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,28 +17,30 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
- * Task to finish the last parking that the user parked
+ * Task to call one service to start, end o getStatus of user
  *
  * Created by mirrorlink on 6/17/17.
  */
 
-class RequestParkingEndTask extends AsyncTask<String, String, String> {
+class RequestServiceTask extends AsyncTask<String, String, String> {
 
     private Exception exception;
     private Context context;
+    private JSONObject objectResponse = null;
 
-    public RequestParkingEndTask(Context context){
+    public RequestServiceTask(Context context){
         this.context = context;
     }
 
-    protected String doInBackground(String... urls) {
+    protected String doInBackground(String... services) {
         try {
-            URL url = new URL("http://163.10.20.80/universe-core/mobile/finalizarEstacionamiento");
+            String service = services[0];
+            URL url = new URL("http://163.10.20.80/universe-core/mobile/" + service);
             String param="celular=" + URLEncoder.encode("2215407348","UTF-8")+
                     "&token="+URLEncoder.encode(MainActivity.singletonVo.getTokenAthentication(),"UTF-8")+
                     "&version="+URLEncoder.encode("1","UTF-8")+
-                    "&password="+URLEncoder.encode("123abc123","UTF-8")+
-                    "&agente="+URLEncoder.encode("8","UTF-8");
+                    "&agente="+URLEncoder.encode("8","UTF-8")+
+                    "&matricula="+URLEncoder.encode("ZIO989","UTF-8");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
@@ -49,6 +55,12 @@ class RequestParkingEndTask extends AsyncTask<String, String, String> {
             InputStream in = new BufferedInputStream(conn.getInputStream());
             String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
             System.out.println(response);
+            try {
+                JSONObject jObject = new JSONObject(response);
+                this.setObjectResponse(jObject);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         } catch (MalformedURLException e) {
             System.out.println("The URL is not valid.");
             System.out.println(e.getMessage());
@@ -60,8 +72,8 @@ class RequestParkingEndTask extends AsyncTask<String, String, String> {
     }
 
     protected void onPostExecute(String feed) {
-        // TODO: check this.exception
-        // TODO: do something with the feed
+        // We call the response for the user when try to get any service
+        MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
     }
 
 
@@ -79,5 +91,13 @@ class RequestParkingEndTask extends AsyncTask<String, String, String> {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public JSONObject getObjectResponse() {
+        return objectResponse;
+    }
+
+    public void setObjectResponse(JSONObject objectResponse) {
+        this.objectResponse = objectResponse;
     }
 }
