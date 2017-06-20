@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Steer.iml" filepath="$PROJECT_DIR$/Steer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/steertesis.iml" filepath="$PROJECT_DIR$/steertesis.iml" />
     </modules>
   </component>
 </project>

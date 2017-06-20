@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
-def generateSelfSignedCertificate(version){
-    def buildType = version == "release" ? "assembleRelease": "assembleDebug"
+def generateSelfSignedCertificate(version) {
+    def buildType = version == "release" ? "assembleRelease" : "assembleDebug"
     def rerunAssemble = true
     def projectLocation = projectDir.toString()
     def certGeneratorLocation = "certificategenerator-android-studio.jar"
@@ -26,7 +26,7 @@ def generateSelfSignedCertificate(version){
 
     if (rerunAssemble) {
         def subdir = new File(certificateFolder)
-        if( !subdir.exists() ) {
+        if (!subdir.exists()) {
             subdir.mkdirs()
         }
         exec {
@@ -39,7 +39,7 @@ def generateSelfSignedCertificate(version){
             exec {
                 executable "cmd"
                 workingDir projectLocation
-                args  "/c", "..\\gradlew.bat", buildType, "-PisLast=true"
+                args "/c", "..\\gradlew.bat", buildType, "-PisLast=true"
             }
         } else {
             exec {
@@ -70,7 +70,7 @@ android {
             assembleDebug.finalizedBy generateSelfSignedCertificateForDebug
         }
 
-        if (this.hasProperty("assembleRelease")){
+        if (this.hasProperty("assembleRelease")) {
             assembleRelease.finalizedBy generateSelfSignedCertificateForRelase
         }
     }
@@ -99,22 +99,24 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:multidex:1.0.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     //compile "com.android.support:design:25.3.1"
+    compile(name: 'mirrorlink-library', ext: 'aar')
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.android.gms:play-services-maps:10.2.1'
     compile 'com.google.android.gms:play-services-location:10.2.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.google.firebase:firebase-database:10.2.1'
-    compile(name: 'mirrorlink-library', ext: 'aar')
-    testCompile 'junit:junit:4.12'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
+    compile 'com.google.firebase:firebase-auth:10.2.1'
+    testCompile 'junit:junit:4.12'
 }
+
 
 
 apply plugin: 'com.google.gms.google-services'
