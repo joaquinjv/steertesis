@@ -14,6 +14,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import static android.app.Activity.RESULT_OK;
+import static com.unlp.tesis.steer.Constants.E_END_PARKING;
+import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_END_PARKING;
+import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_START_PARKING;
+import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_STATE_PARKING;
+import static com.unlp.tesis.steer.Constants.E_START_PARKING;
+import static com.unlp.tesis.steer.Constants.E_STATE_OF_PARKING;
 
 /**
  * Created by jvillalba on 6/6/17.
@@ -58,22 +64,34 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    // If for example the user said "estacionar" in Voice Recognizer
-                    if (result.get(0).equals("estacionar")) {
-                        // We set service to call start parking
-                        match = Boolean.TRUE;
-                        serviceString = "iniciarEstacionamiento";
+                    // If the user try to said something for start the parking in Voice Recognizer
+                    for (String s : E_SPEECH_TO_START_PARKING) {
+                        int i = s.indexOf(result.get(0));
+                        if (i >= 0) {
+                            // We set service to call start parking
+                            match = Boolean.TRUE;
+                            serviceString = E_START_PARKING;
+                        }
                     }
-                    if (result.get(0).equals("fin")) {
-                        // We set service to call end parking
-                        match = Boolean.TRUE;
-                        serviceString = "finalizarEstacionamiento";
+                    // If the user try to said something for end the parking in Voice Recognizer
+                    for (String s : E_SPEECH_TO_END_PARKING) {
+                        int i = s.indexOf(result.get(0));
+                        if (i >= 0) {
+                            // We set service to call start parking
+                            match = Boolean.TRUE;
+                            serviceString = E_END_PARKING;
+                        }
                     }
-                    if (result.get(0).equals("estado")) {
-                        // We set service to call getStatus
-                        match = Boolean.TRUE;
-                        serviceString = "consultarEstado";
+                    // If the user try to said something for consult the state parking in Voice Recognizer
+                    for (String s : E_SPEECH_TO_STATE_PARKING) {
+                        int i = s.indexOf(result.get(0));
+                        if (i >= 0) {
+                            // We set service to call start parking
+                            match = Boolean.TRUE;
+                            serviceString = E_STATE_OF_PARKING;
+                        }
                     }
+
                     if (match){
                         new RequestServiceTask(this.context).execute(serviceString);
                     }

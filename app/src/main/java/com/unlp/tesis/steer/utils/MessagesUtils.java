@@ -8,7 +8,12 @@ import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.unlp.tesis.steer.MainActivity;
+import com.unlp.tesis.steer.R;
+
 import org.json.JSONObject;
+
+import static com.unlp.tesis.steer.MainActivity.fab;
 
 /**
  * Simple utils for messages to user
@@ -58,6 +63,14 @@ public class MessagesUtils {
                     handler.removeCallbacks(runnable);
                 }
             });
+
+            if (!MainActivity.getParkingStarted()){
+                MainActivity.setParkingStarted(Boolean.TRUE);
+                fab.setImageResource(R.drawable.ic_logo_parking_green);
+            } else {
+                MainActivity.setParkingStarted(Boolean.FALSE);
+                fab.setImageResource(R.drawable.ic_logo_parking);
+            }
 
             handler.postDelayed(runnable, 7000);
         } catch (Exception e) {

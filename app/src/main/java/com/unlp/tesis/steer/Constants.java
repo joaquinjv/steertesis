@@ -19,6 +19,7 @@ package com.unlp.tesis.steer;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Constants used in this sample.
@@ -58,4 +59,21 @@ public final class Constants {
         // Googleplex.
         LAPLATA_GEOFENCES_AREAS.put("JOACO", new LatLng(-34.9306643,-57.9727699));
     }
+
+    /**
+     * Constants for operations to do in the server
+     */
+    public static final String E_START_PARKING = "iniciarEstacionamiento";
+    public static final String E_END_PARKING = "finalizarEstacionamiento";
+    public static final String E_STATE_OF_PARKING= "consultarEstado";
+
+    /**
+     * Constants for text recognized in the speech voice
+     */
+    public static final String[] E_SPEECH_TO_START_PARKING = new String[]{
+            "estacionar","iniciar estacionamiento"};
+    public static final String[] E_SPEECH_TO_END_PARKING = new String[]{
+            "fin","finalizar","finalizar estacionamiento", "terminar"};
+    public static final String[] E_SPEECH_TO_STATE_PARKING = new String[]{
+            "saldo","estado", "consulta"};
 }

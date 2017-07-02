@@ -2,6 +2,7 @@ package com.unlp.tesis.steer;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.view.View;
 
 import com.unlp.tesis.steer.utils.MessagesUtils;
 
@@ -74,6 +75,7 @@ class RequestServiceTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String feed) {
         // We call the response for the user when try to get any service
         MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
+
     }
 
 

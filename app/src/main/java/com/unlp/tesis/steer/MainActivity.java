@@ -24,6 +24,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -50,6 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.unlp.tesis.steer.Constants.E_END_PARKING;
+import static com.unlp.tesis.steer.Constants.E_START_PARKING;
+
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         SharedPreferences.OnSharedPreferenceChangeListener
@@ -75,7 +79,13 @@ public class MainActivity extends AppCompatActivity implements
     //Google Map
     private GoogleMap mMap;
 
+    private static Boolean parkingStarted = Boolean.FALSE;
+
     public static SingletonVo singletonVo = SingletonVo.getInstance();
+
+    public static FloatingActionButton fabparked = null;
+
+    public static  FloatingActionButton fab = null;
 
     /**
      * The list of points of sales markers used in this sample.
@@ -141,12 +151,26 @@ public class MainActivity extends AppCompatActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //La voz debe ser elemento principal de la app, por eso la solicitamos acá
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //The voice is an big additional in the app, we keep this element in the main activiy
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startVoiceRecognitionActivity();
+            }
+        });
+
+        // If I keep the button pressed I parked directly
+        fab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public synchronized boolean onLongClick(View v) {
+                if (!getParkingStarted()){
+                    startParking();
+                } else {
+                    endParking();
+                }
+
+                return true;
             }
         });
 
@@ -181,6 +205,14 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         new SpeechTask(this,requestCode,resultCode,data).execute("");
+    }
+
+    protected void startParking() {
+        new RequestServiceTask(this).execute(E_START_PARKING);
+    }
+
+    protected void endParking() {
+        new RequestServiceTask(this).execute(E_END_PARKING);
     }
 
     /**
@@ -417,4 +449,20 @@ public class MainActivity extends AppCompatActivity implements
         this.token = token;
     }
 
+
+    public FloatingActionButton getFabparked() {
+        return fabparked;
+    }
+
+    public void setFabparked(FloatingActionButton fabparked) {
+        this.fabparked = fabparked;
+    }
+
+    public static Boolean getParkingStarted() {
+        return parkingStarted;
+    }
+
+    public static void setParkingStarted(Boolean parkingStartedParam) {
+        parkingStarted = parkingStartedParam;
+    }
 }
