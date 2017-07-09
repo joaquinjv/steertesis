@@ -3,8 +3,11 @@ package com.unlp.tesis.steer.utils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -12,6 +15,8 @@ import com.unlp.tesis.steer.MainActivity;
 import com.unlp.tesis.steer.R;
 
 import org.json.JSONObject;
+
+import java.util.Locale;
 
 import static com.unlp.tesis.steer.MainActivity.fab;
 
@@ -23,6 +28,7 @@ import static com.unlp.tesis.steer.MainActivity.fab;
 
 public class MessagesUtils {
 
+    private static TextToSpeech tts;
     /**
      * It's used for message to start and end the parking
      * @param context
@@ -30,11 +36,13 @@ public class MessagesUtils {
      */
     public static void generteAlertMessage(Context context, JSONObject response) {
         try {
+
             final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
                     .setMessage("Saldo: $" + response.getString("saldo"));
 
+            final String messageError = response.getString("messageError");
             TextView title = new TextView(context);
-            title.setText(response.getString("messageError"));
+            title.setText(messageError);
             title.setGravity(Gravity.CENTER);
             title.setTextSize(40);
             title.setBackgroundColor(Color.parseColor("#8bc34a"));
@@ -42,6 +50,16 @@ public class MessagesUtils {
             dialog.setCustomTitle(title);
             final AlertDialog alert = dialog.create();
             alert.show();
+
+            tts = (new TextToSpeech(context, new TextToSpeech.OnInitListener(){
+                @Override
+                public void onInit(int status) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        tts.setLanguage(new Locale("ar"));
+                        tts.speak(messageError, TextToSpeech.QUEUE_FLUSH, null, null);
+                    }
+                }
+            }));
 
             TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
             textMessageView.setTextSize(30);

@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class SpeechTask extends AsyncTask<String, String, String> {
     private int requestCode;
     private int resultCode;
     private Intent data;
+    private TextToSpeech tts;
 
     public SpeechTask(Context context){
         this.context = context;
@@ -125,6 +128,15 @@ public class SpeechTask extends AsyncTask<String, String, String> {
         final AlertDialog alert = dialog.create();
         alert.show();
 
+        this.setTts(new TextToSpeech(this.context, new TextToSpeech.OnInitListener(){
+            @Override
+            public void onInit(int status) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    tts.speak("Z", TextToSpeech.QUEUE_FLUSH, null, null);
+                }
+            }
+        }));
+
         TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
         textMessageView.setTextSize(30);
 
@@ -174,4 +186,11 @@ public class SpeechTask extends AsyncTask<String, String, String> {
         this.data = data;
     }
 
+    public TextToSpeech getTts() {
+        return tts;
+    }
+
+    public void setTts(TextToSpeech tts) {
+        this.tts = tts;
+    }
 }
