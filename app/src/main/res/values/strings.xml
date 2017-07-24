@@ -6,6 +6,8 @@
     <string name="ok">Aceptar</string>
     <string name="settings">Ajustes</string>
 
+    <string name="titleNavView">TITULO</string>
+
     <!-- ************* -->
     <!--Geofences values -->
     <!-- ************* -->
@@ -48,4 +50,20 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
+
+
+
+
+    <string name="seccion_1">Sección 1</string>
+    <string name="seccion_2">Sección 2</string>
+    <string name="otras_opciones">Otras opciones</string>
+    <string name="opcion_1">Opción 1</string>
+    <string name="opcion_2">Opción 2</string>
+    <string name="seccion_3">Sección 3</string>
+    <string name="usuario">Usuario</string>
+    <string name="menu_abierto">Menu Abierto</string>
+    <string name="menu_cerrado">Menu Cerrado</string>
+    <string name="fragment1">Fragment 1</string>
+    <string name="fragment2">Fragment 2</string>
+    <string name="fragment3">Fragment 3</string>
 </resources>

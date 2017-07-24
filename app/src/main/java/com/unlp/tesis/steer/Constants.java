@@ -35,6 +35,12 @@ public final class Constants {
 
     public static final String GEOFENCES_ADDED_KEY = PACKAGE_NAME + ".GEOFENCES_ADDED_KEY";
 
+    public static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
+
+    public static final String EXTRA_LOCATION = PACKAGE_NAME + ".location";
+
+    public static final String EXTRA_GEOFENCE= PACKAGE_NAME + ".geofence";
+
     /**
      * Used to set an expiration time for a geofence. After this amount of time Location Services
      * stops tracking the geofence.

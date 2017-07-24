@@ -18,12 +18,19 @@ import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -58,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         SharedPreferences.OnSharedPreferenceChangeListener
 {
+
+    /*NAV VIEW*/
+    private Toolbar appbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navView;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -119,7 +131,21 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        appbar = (Toolbar)findViewById(R.id.appbar);
+        setSupportActionBar(appbar);
 
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_nav_menu);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        navView = (NavigationView)findViewById(R.id.navview);
+        navView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        return navigationItemSelected(menuItem);
+                    }
+                });
         //get firebase auth instance
         mAuth = FirebaseAuth.getInstance();
 
@@ -175,6 +201,28 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         new RequestLoginTask(this).execute("");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -240,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
-                new IntentFilter(LocationService.ACTION_BROADCAST));
+                new IntentFilter(Constants.ACTION_BROADCAST));
     }
 
     @Override
@@ -278,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
             Snackbar.make(
-                    findViewById(R.id.activity_main),
+                    findViewById(R.id.drawer_layout),
                     R.string.permission_rationale,
                     Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.ok, new View.OnClickListener() {
@@ -320,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 // Permission denied.
                 Snackbar.make(
-                        findViewById(R.id.activity_main),
+                        findViewById(R.id.drawer_layout),
                         R.string.permission_denied_explanation,
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.settings, new View.OnClickListener() {
@@ -355,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements
     private class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Location location = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
+            Location location = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
             if (location != null) {
 
                 if (mMap != null) {
@@ -439,6 +487,35 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
         );
+    }
+
+    public boolean navigationItemSelected(MenuItem menuItem) {
+
+        boolean fragmentTransaction = false;
+        Fragment fragment = null;
+
+        switch (menuItem.getItemId()) {
+            case R.id.menu_seccion_1:
+//                fragment = new Fragment1();
+//                fragmentTransaction = true;
+                break;
+            case R.id.menu_opcion_1:
+                Log.i("NavigationView", "Pulsada opción 1");
+                break;
+        }
+
+        if(fragmentTransaction) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content, fragment)
+                    .commit();
+
+            menuItem.setChecked(true);
+            getSupportActionBar().setTitle(menuItem.getTitle());
+        }
+
+        drawerLayout.closeDrawers();
+
+        return true;
     }
 
     public String getToken() {
