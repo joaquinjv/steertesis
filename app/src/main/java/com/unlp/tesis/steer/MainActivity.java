@@ -33,6 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -53,6 +54,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.unlp.tesis.steer.entities.PointOfSale;
+import com.unlp.tesis.steer.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements
     private Toolbar appbar;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
+    private TextView titleNavView;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -107,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private DatabaseReference mDatabase;
+
+    private User userData;
     // Monitors the state of the connection to the service.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -137,18 +143,8 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_nav_menu);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        navView = (NavigationView)findViewById(R.id.navview);
-        navView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        return navigationItemSelected(menuItem);
-                    }
-                });
         //get firebase auth instance
         mAuth = FirebaseAuth.getInstance();
-
         //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -164,6 +160,19 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
+
+        titleNavView = (TextView)findViewById(R.id.titleNavView);
+       // titleNavView.setText("TETEATTAA");
+//        titleNavView.setText(userData.getName());
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        navView = (NavigationView)findViewById(R.id.navview);
+        navView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        return navigationItemSelected(menuItem);
+                    }
+                });
 
         myReceiver = new MyReceiver();
 
@@ -201,6 +210,38 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         new RequestLoginTask(this).execute("");
+        titleNavView = (TextView)findViewById(R.id.titleNavView);
+//                // [START initialize_database_ref]
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
+//        mDatabase.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(
+//                new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        // Get user value
+//                        User user = dataSnapshot.getValue(User.class);
+//
+//                        // [START_EXCLUDE]
+//                        if (user == null) {
+//                            // User is null, error out
+//                            Log.e(TAG, "User  is unexpectedly null");
+//                            Toast.makeText(getApplicationContext(),
+//                                    "Error: could not fetch user.",
+//                                    Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            // Write new post
+//                            userData = user;
+//                        }
+//                        // Finish this Activity, back to the stream
+//                        finish();
+//                        // [END_EXCLUDE]
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+//                    }
+//                });
+        // titleNavView.setText("TETEATTAA");
     }
 
     @Override

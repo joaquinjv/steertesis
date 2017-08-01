@@ -18,13 +18,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.unlp.tesis.steer.entities.User;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText inputEmail, inputPassword;
+    private EditText inputEmail, inputPassword, inputName, inputPlate;
     private Button btnSignIn, btnSignUp, btnResetPassword;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,8 @@ public class SignupActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //Get Firebase database instance
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
@@ -42,6 +49,8 @@ public class SignupActivity extends AppCompatActivity {
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
+        inputName = (EditText) findViewById(R.id.name);
+        inputPlate = (EditText) findViewById(R.id.plate);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
 
@@ -84,7 +93,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.VISIBLE);
                 //create user
-                auth.createUserWithEmailAndPassword(email, password)
+                auth. createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -97,14 +106,25 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
-                                    finish();
+                                    onAuthSuccess(task.getResult().getUser());
                                 }
                             }
                         });
 
             }
         });
+    }
+
+    private void onAuthSuccess(FirebaseUser user) {
+        String name = inputName.getText().toString().trim();
+        String plate = inputPlate.getText().toString().trim();
+
+        // Write new user
+        writeNewUser(user.getUid(), name, user.getEmail(), plate);
+
+        // Go to MainActivity
+        startActivity(new Intent(SignupActivity.this, MainActivity.class));
+        finish();
     }
 
     private void resetPassword() {
@@ -154,5 +174,12 @@ public class SignupActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
+    }
+
+    // [START basic_write]
+    private void writeNewUser(String userId, String name, String email, String plate) {
+        User user = new User(name, email, plate);
+
+        mDatabase.child("users").child(userId).setValue(user);
     }
 }
