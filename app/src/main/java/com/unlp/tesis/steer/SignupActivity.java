@@ -38,7 +38,7 @@ public class SignupActivity extends AppCompatActivity {
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Get Firebase database instance
         mDatabase = FirebaseDatabase.getInstance().getReference();

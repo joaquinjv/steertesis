@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
 
         new RequestLoginTask(this).execute("");
         titleNavView = (TextView)findViewById(R.id.titleNavView);
-//                // [START initialize_database_ref]
+                // [START initialize_database_ref]
 //        mDatabase = FirebaseDatabase.getInstance().getReference();
 //        mDatabase.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(
 //                new ValueEventListener() {
