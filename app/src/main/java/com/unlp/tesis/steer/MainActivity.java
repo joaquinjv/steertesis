@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -210,38 +211,46 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         new RequestLoginTask(this).execute("");
-        titleNavView = (TextView)findViewById(R.id.titleNavView);
+
                 // [START initialize_database_ref]
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        mDatabase.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(
-//                new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        // Get user value
-//                        User user = dataSnapshot.getValue(User.class);
-//
-//                        // [START_EXCLUDE]
-//                        if (user == null) {
-//                            // User is null, error out
-//                            Log.e(TAG, "User  is unexpectedly null");
-//                            Toast.makeText(getApplicationContext(),
-//                                    "Error: could not fetch user.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            // Write new post
-//                            userData = user;
-//                        }
-//                        // Finish this Activity, back to the stream
-//                        finish();
-//                        // [END_EXCLUDE]
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-//                    }
-//                });
-        // titleNavView.setText("TETEATTAA");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            // User is null, error out
+                            Log.e(TAG, "User  is unexpectedly null");
+                            Toast.makeText(getApplicationContext(),
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            titleNavView = (TextView)findViewById(R.id.titleNavView);
+                            titleNavView.setText(user.getName());
+                        }
+                        // [END_EXCLUDE]
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(drawerLayout.isDrawerOpen(Gravity.LEFT)){ //replace this with actual function which returns if the drawer is open
+            drawerLayout.closeDrawers();     // replace this with actual function which closes drawer
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 
     @Override
