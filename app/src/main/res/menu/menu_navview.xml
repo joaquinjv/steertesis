@@ -12,9 +12,10 @@
         android:title="@string/otras_opciones">
         <menu>
             <item
-                android:id="@+id/menu_opcion_1"
+                android:id="@+id/menu_audio_preference"
                 android:icon="@drawable/ic_menu"
-                android:title="@string/opcion_1"/>
+                android:title="@string/menu_audio_preference"
+                android:checkable="true"/>
         </menu>
     </item>
 </menu>

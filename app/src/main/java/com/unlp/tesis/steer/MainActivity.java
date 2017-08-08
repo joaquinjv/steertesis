@@ -56,6 +56,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.unlp.tesis.steer.entities.PointOfSale;
 import com.unlp.tesis.steer.entities.User;
+import com.unlp.tesis.steer.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements
 //        titleNavView.setText(userData.getName());
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         navView = (NavigationView)findViewById(R.id.navview);
+        if (Preferences.getAudioPreference(this)) {
+            navView.setCheckedItem(R.id.menu_audio_preference);
+        }
         navView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -252,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements
             super.onBackPressed();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -541,27 +546,27 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean navigationItemSelected(MenuItem menuItem) {
 
-        boolean fragmentTransaction = false;
-        Fragment fragment = null;
+//        boolean fragmentTransaction = false;
+//        Fragment fragment = null;
 
         switch (menuItem.getItemId()) {
             case R.id.menu_seccion_1:
 //                fragment = new Fragment1();
 //                fragmentTransaction = true;
                 break;
-            case R.id.menu_opcion_1:
-                Log.i("NavigationView", "Pulsada opción 1");
+            case R.id.menu_audio_preference:
+                menuItem.setChecked(!menuItem.isChecked());
                 break;
         }
 
-        if(fragmentTransaction) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content, fragment)
-                    .commit();
-
-            menuItem.setChecked(true);
-            getSupportActionBar().setTitle(menuItem.getTitle());
-        }
+//        if(fragmentTransaction) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.content, fragment)
+//                    .commit();
+//
+//            menuItem.setChecked(true);
+//            getSupportActionBar().setTitle(menuItem.getTitle());
+//        }
 
         drawerLayout.closeDrawers();
 
