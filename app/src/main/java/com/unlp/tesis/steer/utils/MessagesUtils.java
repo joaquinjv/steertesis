@@ -193,7 +193,7 @@ public class MessagesUtils {
     }
 
     /**
-     * It's used for message to start and end the parking
+     * It's used for message to confirm that the alert was created successfully
      * @param context
      * @param response
      */

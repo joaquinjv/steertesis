@@ -3,23 +3,13 @@ package com.unlp.tesis.steer;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.unlp.tesis.steer.entities.Alert;
 import com.unlp.tesis.steer.utils.MessagesUtils;
 
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-
-import static com.unlp.tesis.steer.Constants.EVENT_CREATE_EVENT;
-
 /**
- * Task to call one service to start, end o getStatus of user
+ * Task to create an alert and persist this in the Android DB
  *
  * Created by mirrorlink on 6/17/17.
  */
@@ -30,6 +20,7 @@ class RequestEventTask extends AsyncTask<String, String, String> {
     private Context context;
     private JSONObject objectResponse = null;
     private String event;
+    private Alert alert;
 
     public RequestEventTask(Context context){
         this.context = context;
@@ -37,68 +28,26 @@ class RequestEventTask extends AsyncTask<String, String, String> {
 
     protected String doInBackground(String... services) {
         try {
-            /*
-            * Input:
-            * email: String, clave: String, municipio: Long, direccion: String,
-            * tipo: Long, descripcion: Long, observacion: String, fhInicio: String,
-            * agente: Integer, version: String, fileName:String, latitud: String, longitud: String
-            *
-            * consultarTiposAlerta
-            * tiposAlerta: [id : 8 , nombre: Vía publica
-            * descripciones : [ id: 8 , nombre: Bache] ]
-            * */
             this.setEvent(services[0]);
-            URL url = new URL("http://163.10.181.26/MLP_CenIT_Service30/services/wssph.aspx");
-            String param="&email="+URLEncoder.encode("joaquin547@gmail.com", "UTF-8") +
-                    "&clave="+URLEncoder.encode("4807","UTF-8")+
-                    "&municipio="+URLEncoder.encode("7","UTF-8")+
-                    "&direccion="+URLEncoder.encode("1","UTF-8")+
-                    "&tipo="+URLEncoder.encode("1","UTF-8")+
-                    "&descripcion="+URLEncoder.encode("1","UTF-8")+
-                    "&observacion=" + URLEncoder.encode("8","UTF-8")+
-                    "&fhInicio="+URLEncoder.encode("2017-08-10","UTF-8")+
-                    "&agente="+URLEncoder.encode("8","UTF-8")+
-                    "&version="+URLEncoder.encode("1.0","UTF-8")+
-                    "&fileName="+URLEncoder.encode("1","UTF-8")+
-                    "&latitud="+URLEncoder.encode("0","UTF-8")+
-                    "&longitud="+URLEncoder.encode("0","UTF-8")+
-                    "&op="+URLEncoder.encode(this.getEvent(),"UTF-8");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setFixedLengthStreamingMode(param.getBytes().length);
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-            // read the reponse
-            //send the POST out
-            PrintWriter out = new PrintWriter(conn.getOutputStream());
-            out.print(param);
-            out.close();
-            System.out.println("Response Code: " + conn.getResponseCode());
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-            System.out.println(response);
-            try {
-                JSONObject jObject = new JSONObject(response);
-                this.setObjectResponse(jObject);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        } catch (MalformedURLException e) {
-            System.out.println("The URL is not valid.");
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println("IOException!");
-            System.out.println(e.getMessage());
+            // Persist the alert in the Android DB
+            // TODO
+            // We need create the alert and persist this
+            /* Example
+            JSONObject jObject = new JSONObject();
+            jObject.put("lat", String.valueOf(this.getAlert().getLatitude()));
+            jObject.put("lon", String.valueOf(this.getAlert().getLongitude()));
+            this.setObjectResponse(jObject);
+            */
+        } catch (Exception e) {
+            System.out.println(e);
         }
+
         return "";
     }
 
     protected void onPostExecute(String feed) {
         // We call the response for the user when try to get any service
-        //MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
-        if (this.getEvent() == EVENT_CREATE_EVENT){
-//            MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
-        }
+        MessagesUtils.generteEventMessage(this.getContext(), this.getObjectResponse());
     }
 
     public Exception getException() {
@@ -131,5 +80,13 @@ class RequestEventTask extends AsyncTask<String, String, String> {
 
     public void setEvent(String event) {
         this.event = event;
+    }
+
+    public Alert getAlert() {
+        return alert;
+    }
+
+    public void setAlert(Alert alert) {
+        this.alert = alert;
     }
 }

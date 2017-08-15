@@ -16,9 +16,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import static android.app.Activity.RESULT_OK;
+import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
 import static com.unlp.tesis.steer.Constants.E_END_PARKING;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_END_PARKING;
-import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_REPORT_EVENT;
+import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_REPORT_POTHOLE;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_START_PARKING;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_STATE_PARKING;
 import static com.unlp.tesis.steer.Constants.E_START_PARKING;
@@ -64,7 +65,7 @@ public class SpeechTask extends AsyncTask<String, String, String> {
             // Always the result come from the Speech is 100
             case 100: {
                 Boolean matchSem = Boolean.FALSE;
-                Boolean matchCenit = Boolean.FALSE;
+                Boolean matchAlert = Boolean.FALSE;
                 String serviceString = null;
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data
@@ -98,18 +99,18 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                     }
 
                     // If the user try to report an event
-                    for (String s : E_SPEECH_TO_REPORT_EVENT) {
+                    for (String s : E_SPEECH_TO_REPORT_POTHOLE) {
                         int i = s.indexOf(result.get(0));
                         if (i >= 0) {
                             // We set service to call start parking
-                            matchCenit = Boolean.TRUE;
-                            serviceString = E_STATE_OF_PARKING;
+                            matchAlert = Boolean.TRUE;
+                            serviceString = EVENT_CREATE_ALERT_POTHOLE;
                         }
                     }
 
                     if (matchSem){
                         new RequestServiceTask(this.context).execute(serviceString);
-                    } else if (matchCenit){
+                    } else if (matchAlert){
                         new RequestEventTask(this.context).execute(serviceString);
                     } else {
                         Toast.makeText(context, "Comando " + result.get(0) + " incorrecto", Toast.LENGTH_SHORT).show();

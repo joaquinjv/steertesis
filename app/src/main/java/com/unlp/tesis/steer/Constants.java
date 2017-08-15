@@ -72,7 +72,7 @@ public final class Constants {
     public static final String E_START_PARKING = "iniciarEstacionamiento";
     public static final String E_END_PARKING = "finalizarEstacionamiento";
     public static final String E_STATE_OF_PARKING= "consultarEstado";
-    public static final String EVENT_CREATE_EVENT= "crearEvento";
+    public static final String EVENT_CREATE_ALERT_POTHOLE= "crearEvento";
 
     /**
      * Constants for text recognized in the speech voice
@@ -83,6 +83,6 @@ public final class Constants {
             "fin","finalizar","finalizar estacionamiento", "terminar"};
     public static final String[] E_SPEECH_TO_STATE_PARKING = new String[]{
             "saldo","estado", "consulta"};
-    public static final String[] E_SPEECH_TO_REPORT_EVENT = new String[]{
-            "denunciar", "evento"};
+    public static final String[] E_SPEECH_TO_REPORT_POTHOLE = new String[]{
+            "bache", "pozo"};
 }
