@@ -27,12 +27,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +58,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.unlp.tesis.steer.entities.PointOfSale;
 import com.unlp.tesis.steer.entities.User;
+import com.unlp.tesis.steer.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     private String token;
 
     //Google Map
-    private GoogleMap mMap;
+    public static GoogleMap mMap;
 
     private static Boolean parkingStarted = Boolean.FALSE;
 
@@ -101,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements
     public static FloatingActionButton fabparked = null;
 
     public static  FloatingActionButton fab = null;
+
+    public static Marker mCurrLocation = null;
 
     /**
      * The list of points of sales markers used in this sample.
@@ -210,39 +216,48 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         new RequestLoginTask(this).execute("");
-        titleNavView = (TextView)findViewById(R.id.titleNavView);
+
                 // [START initialize_database_ref]
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        mDatabase.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(
-//                new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        // Get user value
-//                        User user = dataSnapshot.getValue(User.class);
-//
-//                        // [START_EXCLUDE]
-//                        if (user == null) {
-//                            // User is null, error out
-//                            Log.e(TAG, "User  is unexpectedly null");
-//                            Toast.makeText(getApplicationContext(),
-//                                    "Error: could not fetch user.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            // Write new post
-//                            userData = user;
-//                        }
-//                        // Finish this Activity, back to the stream
-//                        finish();
-//                        // [END_EXCLUDE]
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-//                    }
-//                });
-        // titleNavView.setText("TETEATTAA");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            // User is null, error out
+                            Log.e(TAG, "User  is unexpectedly null");
+                            Toast.makeText(getApplicationContext(),
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            titleNavView = (TextView)findViewById(R.id.titleNavView);
+                            titleNavView.setText(user.getName());
+                        }
+                        // [END_EXCLUDE]
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+
     }
+
+    @Override
+    public void onBackPressed(){
+        if(drawerLayout.isDrawerOpen(Gravity.LEFT)){ //replace this with actual function which returns if the drawer is open
+            drawerLayout.closeDrawers();     // replace this with actual function which closes drawer
+        }
+        else{
+            super.onBackPressed();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -316,6 +331,15 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        //Set audio preferences switch method
+        SwitchCompat switchItem = (SwitchCompat) navView.getMenu().findItem(R.id.menu_audio_preference_switch).getActionView();
+        switchItem.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener(){
+            @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Preferences.setAudioPreference(getApplicationContext(), isChecked);
+            }
+        });
+        //Set audio preferences
+        switchItem.setChecked(Preferences.getAudioPreference(this));
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
@@ -458,7 +482,10 @@ public class MainActivity extends AppCompatActivity implements
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
-                    mMap.setMyLocationEnabled(true);
+                    mMap.setMyLocationEnabled(false);
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    new RequestPositionTask(MainActivity.this, location).execute();
+                    /*
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     CameraPosition camPos = CameraPosition
                             .builder(
@@ -471,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements
                             .tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
                             .build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
-                    mMap.animateCamera(cameraUpdate);
+                    mMap.animateCamera(cameraUpdate);*/
                     //startGeofence();
                 }
             }
@@ -484,6 +511,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMaxZoomPreference(18.0f);
+        mMap.setMinZoomPreference(15.0f);
         this.setPointOfSales();
     }
 
@@ -532,27 +561,24 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean navigationItemSelected(MenuItem menuItem) {
 
-        boolean fragmentTransaction = false;
-        Fragment fragment = null;
+//        boolean fragmentTransaction = false;
+//        Fragment fragment = null;
 
         switch (menuItem.getItemId()) {
             case R.id.menu_seccion_1:
 //                fragment = new Fragment1();
 //                fragmentTransaction = true;
                 break;
-            case R.id.menu_opcion_1:
-                Log.i("NavigationView", "Pulsada opción 1");
-                break;
         }
 
-        if(fragmentTransaction) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content, fragment)
-                    .commit();
-
-            menuItem.setChecked(true);
-            getSupportActionBar().setTitle(menuItem.getTitle());
-        }
+//        if(fragmentTransaction) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.content, fragment)
+//                    .commit();
+//
+//            menuItem.setChecked(true);
+//            getSupportActionBar().setTitle(menuItem.getTitle());
+//        }
 
         drawerLayout.closeDrawers();
 
