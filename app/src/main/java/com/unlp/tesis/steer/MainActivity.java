@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     private String token;
 
     //Google Map
-    private GoogleMap mMap;
+    public static GoogleMap mMap;
 
     private static Boolean parkingStarted = Boolean.FALSE;
 
@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements
     public static FloatingActionButton fabparked = null;
 
     public static  FloatingActionButton fab = null;
+
+    public static Marker mCurrLocation = null;
 
     /**
      * The list of points of sales markers used in this sample.
@@ -480,7 +482,10 @@ public class MainActivity extends AppCompatActivity implements
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
-                    mMap.setMyLocationEnabled(true);
+                    mMap.setMyLocationEnabled(false);
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    new RequestPositionTask(MainActivity.this, location).execute();
+                    /*
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     CameraPosition camPos = CameraPosition
                             .builder(
@@ -493,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements
                             .tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
                             .build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
-                    mMap.animateCamera(cameraUpdate);
+                    mMap.animateCamera(cameraUpdate);*/
                     //startGeofence();
                 }
             }
@@ -506,6 +511,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMaxZoomPreference(18.0f);
+        mMap.setMinZoomPreference(15.0f);
         this.setPointOfSales();
     }
 
