@@ -16,9 +16,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import static android.app.Activity.RESULT_OK;
+import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT;
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
 import static com.unlp.tesis.steer.Constants.E_END_PARKING;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_END_PARKING;
+import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_REPORT_COURT;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_REPORT_POTHOLE;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_START_PARKING;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_STATE_PARKING;
@@ -98,13 +100,23 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                         }
                     }
 
-                    // If the user try to report an event
+                    // If the user try to report an pothole event
                     for (String s : E_SPEECH_TO_REPORT_POTHOLE) {
                         int i = s.indexOf(result.get(0));
                         if (i >= 0) {
                             // We set service to call start parking
                             matchAlert = Boolean.TRUE;
                             serviceString = EVENT_CREATE_ALERT_POTHOLE;
+                        }
+                    }
+
+                    // If the user try to report an court event
+                    for (String s : E_SPEECH_TO_REPORT_COURT) {
+                        int i = s.indexOf(result.get(0));
+                        if (i >= 0) {
+                            // We set service to call start parking
+                            matchAlert = Boolean.TRUE;
+                            serviceString = EVENT_CREATE_ALERT_COURT;
                         }
                     }
 

@@ -200,10 +200,12 @@ public class MessagesUtils {
     public static void generteEventMessage(Context context, JSONObject response) {
         try {
 
-            final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
-                    .setMessage("Saldo: $" + response.getString("saldo"));
+            /*final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
+                    .setMessage("Saldo: $" + response.getString("name"));
+                    */
 
-            final String messageError = response.getString("messageError");
+            final String messageError = "El evento " + response.getString("name") + " fue creado correctamente";
+            /*
             TextView title = new TextView(context);
             title.setText(messageError);
             title.setGravity(Gravity.CENTER);
@@ -213,6 +215,7 @@ public class MessagesUtils {
             dialog.setCustomTitle(title);
             final AlertDialog alert = dialog.create();
             alert.show();
+            */
 
             tts = (new TextToSpeech(context, new TextToSpeech.OnInitListener(){
                 @Override
@@ -224,6 +227,7 @@ public class MessagesUtils {
                 }
             }));
 
+            /*
             TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
             textMessageView.setTextSize(30);
 
@@ -246,6 +250,7 @@ public class MessagesUtils {
             });
 
             handler.postDelayed(runnable, 7000);
+            */
         } catch (Exception e) {
             System.out.print(e);
         }

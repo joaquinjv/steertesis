@@ -7,31 +7,31 @@ package com.unlp.tesis.steer.entities;
 public class Alert {
 
     private AlertType alertType;
-    private float latitude;
-    private float longitude;
+    private String latitude;
+    private String longitude;
 
     public Alert() {
     }
 
-    public Alert(String description, float latitude, float longitude, AlertType alertType) {
+    public Alert(String description, String latitude, String longitude, AlertType alertType) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.alertType = alertType;
     }
 
-    public float getLatitude() {
+    public String getLatitude() {
         return this.latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public String getLongitude() {
         return this.longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 }
