@@ -2,11 +2,15 @@ package com.unlp.tesis.steer.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
@@ -199,23 +203,23 @@ public class MessagesUtils {
      */
     public static void generteEventMessage(Context context, JSONObject response) {
         try {
-
-            /*final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
-                    .setMessage("Saldo: $" + response.getString("name"));
-                    */
-
             final String messageError = "El evento " + response.getString("name") + " fue creado correctamente";
-            /*
-            TextView title = new TextView(context);
-            title.setText(messageError);
-            title.setGravity(Gravity.CENTER);
-            title.setTextSize(40);
-            title.setBackgroundColor(Color.parseColor("#8bc34a"));
-            title.setTextColor(Color.BLACK);
-            dialog.setCustomTitle(title);
-            final AlertDialog alert = dialog.create();
-            alert.show();
-            */
+
+            LatLng latLng = new LatLng(response.getDouble("lat"),response.getDouble("lon"));
+
+            if (mMap != null){
+                Bitmap origBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo_court);
+                int newWidth = 100;
+                int newHeight = 100;
+                Bitmap bitmap = Bitmap.createScaledBitmap(origBitmap, newWidth, newHeight, true);
+
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title(response.getString("name"));
+                //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                mMap.addMarker(markerOptions);
+            }
 
             tts = (new TextToSpeech(context, new TextToSpeech.OnInitListener(){
                 @Override
@@ -227,30 +231,6 @@ public class MessagesUtils {
                 }
             }));
 
-            /*
-            TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
-            textMessageView.setTextSize(30);
-
-            // Hide after some seconds
-            final Handler handler  = new Handler();
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (alert.isShowing()) {
-                        alert.dismiss();
-                    }
-                }
-            };
-
-            alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    handler.removeCallbacks(runnable);
-                }
-            });
-
-            handler.postDelayed(runnable, 7000);
-            */
         } catch (Exception e) {
             System.out.print(e);
         }

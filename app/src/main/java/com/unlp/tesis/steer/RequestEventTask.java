@@ -29,13 +29,17 @@ class RequestEventTask extends AsyncTask<String, String, String> {
     protected String doInBackground(String... services) {
         try {
             this.setEvent(services[0]);
+            Double lat = Double.parseDouble(services[1]);
+            Double lon = Double.parseDouble(services[2]);
             // Persist the alert in the Android DB
             // TODO
             // We need create the alert and persist this
             // Example
             alert = new Alert();
-            alert.setLatitude("-35,05005");
-            alert.setLongitude("-50,05005");
+            alert.setLatitude(lat);
+            alert.setLongitude(lon);
+            //alert.setLatitude(-34.931707);
+            //alert.setLongitude(-57.968201);
             JSONObject jObject = new JSONObject();
             jObject.put("name", this.getEvent());
             jObject.put("lat", String.valueOf(this.getAlert().getLatitude()));

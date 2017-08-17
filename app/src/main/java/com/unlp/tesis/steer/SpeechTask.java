@@ -69,6 +69,7 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                 Boolean matchSem = Boolean.FALSE;
                 Boolean matchAlert = Boolean.FALSE;
                 String serviceString = null;
+                String[] information = new String[5];
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -106,7 +107,9 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                         if (i >= 0) {
                             // We set service to call start parking
                             matchAlert = Boolean.TRUE;
-                            serviceString = EVENT_CREATE_ALERT_POTHOLE;
+                            information[0] = EVENT_CREATE_ALERT_POTHOLE;
+                            information[1] = String.valueOf(MainActivity.eventZone.latitude);
+                            information[2] = String.valueOf(MainActivity.eventZone.longitude);
                         }
                     }
 
@@ -116,14 +119,16 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                         if (i >= 0) {
                             // We set service to call start parking
                             matchAlert = Boolean.TRUE;
-                            serviceString = EVENT_CREATE_ALERT_COURT;
+                            information[0] = EVENT_CREATE_ALERT_COURT;
+                            information[1] = String.valueOf(MainActivity.eventZone.latitude);
+                            information[2] = String.valueOf(MainActivity.eventZone.longitude);
                         }
                     }
 
                     if (matchSem){
                         new RequestServiceTask(this.context).execute(serviceString);
                     } else if (matchAlert){
-                        new RequestEventTask(this.context).execute(serviceString);
+                        new RequestEventTask(this.context).execute(information);
                     } else {
                         Toast.makeText(context, "Comando " + result.get(0) + " incorrecto", Toast.LENGTH_SHORT).show();
                     }

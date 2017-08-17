@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -39,6 +40,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -95,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements
     // Tracks the bound state of the service.
     private String token;
 
+    protected LocationListener locationListener;
+
+    protected LocationManager locationManager;
+
     //Google Map
     public static GoogleMap mMap;
 
@@ -107,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements
     public static  FloatingActionButton fab = null;
 
     public static Marker mCurrLocation = null;
+
+    public static LatLng eventZone = null;
 
     /**
      * The list of points of sales markers used in this sample.
@@ -292,6 +302,10 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
                 "Diciendo algo...");
+
+        // We save the actual position in the case that it's an alert
+        eventZone = new LatLng(mCurrLocation.getPosition().latitude, mCurrLocation.getPosition().longitude);
+
         try {
             startActivityForResult(intent, 100);
         } catch (ActivityNotFoundException a) {
