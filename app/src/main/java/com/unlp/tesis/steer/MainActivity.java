@@ -525,8 +525,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMaxZoomPreference(18.0f);
-        mMap.setMinZoomPreference(15.0f);
+        mMap.setMaxZoomPreference(17.0f);
+        mMap.setMinZoomPreference(16.0f);
         this.setPointOfSales();
     }
 

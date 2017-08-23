@@ -87,5 +87,5 @@ public final class Constants {
     public static final String[] E_SPEECH_TO_REPORT_POTHOLE = new String[]{
             "bache", "pozo"};
     public static final String[] E_SPEECH_TO_REPORT_COURT = new String[]{
-            "corte", "manifestacion"};
+            "corte", "manifestacion", "manifestación"};
 }

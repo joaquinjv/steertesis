@@ -34,6 +34,8 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
+import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT;
+import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
 import static com.unlp.tesis.steer.MainActivity.fab;
 import static com.unlp.tesis.steer.MainActivity.mCurrLocation;
 import static com.unlp.tesis.steer.MainActivity.mMap;
@@ -203,12 +205,17 @@ public class MessagesUtils {
      */
     public static void generteEventMessage(Context context, JSONObject response) {
         try {
-            final String messageError = "El evento " + response.getString("name") + " fue creado correctamente";
+            String eventName = response.getString("name");
+            final String messageError = "El evento " + eventName + " fue creado correctamente";
 
             LatLng latLng = new LatLng(response.getDouble("lat"),response.getDouble("lon"));
-
+            Bitmap origBitmap = null;
             if (mMap != null){
-                Bitmap origBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo_court);
+                if (eventName == EVENT_CREATE_ALERT_POTHOLE){
+                    origBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo_court);
+                } else if (eventName == EVENT_CREATE_ALERT_COURT){
+                    origBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo_gate);
+                }
                 int newWidth = 100;
                 int newHeight = 100;
                 Bitmap bitmap = Bitmap.createScaledBitmap(origBitmap, newWidth, newHeight, true);

@@ -26,7 +26,7 @@ class RequestEventTask extends AsyncTask<String, String, String> {
     private Exception exception;
     private Context context;
     private JSONObject objectResponse = null;
-    private String event;
+    private String eventName;
     private Alert alert;
 
     public RequestEventTask(Context context){
@@ -35,7 +35,7 @@ class RequestEventTask extends AsyncTask<String, String, String> {
 
     protected String doInBackground(String... services) {
         try {
-            this.setEvent(services[0]);
+            this.setEventName(services[0]);
             Double lat = Double.parseDouble(services[1]);
             Double lon = Double.parseDouble(services[2]);
 
@@ -69,7 +69,7 @@ class RequestEventTask extends AsyncTask<String, String, String> {
             //alert.setLatitude(-34.931707);
             //alert.setLongitude(-57.968201);
             JSONObject jObject = new JSONObject();
-            jObject.put("name", this.getEvent());
+            jObject.put("name", this.getEventName());
             jObject.put("lat", String.valueOf(this.getAlert().getLatitude()));
             jObject.put("lon", String.valueOf(this.getAlert().getLongitude()));
             this.setObjectResponse(jObject);
@@ -109,12 +109,12 @@ class RequestEventTask extends AsyncTask<String, String, String> {
         this.objectResponse = objectResponse;
     }
 
-    public String getEvent() {
-        return event;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setEvent(String event) {
-        this.event = event;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     public Alert getAlert() {
