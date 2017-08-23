@@ -6,7 +6,14 @@ import android.os.AsyncTask;
 import com.unlp.tesis.steer.entities.Alert;
 import com.unlp.tesis.steer.utils.MessagesUtils;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Task to create an alert and persist this in the Android DB
@@ -31,13 +38,34 @@ class RequestEventTask extends AsyncTask<String, String, String> {
             this.setEvent(services[0]);
             Double lat = Double.parseDouble(services[1]);
             Double lon = Double.parseDouble(services[2]);
+
+            // Center the event in the middle of the route
+            String position = lat + "," + lon;
+            String urlToParse = "https://roads.googleapis.com/v1/nearestRoads?points=" + position + "&key=" + this.context.getString(R.string.google_maps_web_services_key);
+            URL url = new URL(urlToParse);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+            // read the reponse
+            //send the POST out
+            PrintWriter out = new PrintWriter(conn.getOutputStream());
+            out.close();
+            System.out.println("Response Code: " + conn.getResponseCode());
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+            System.out.println(response);
+            JSONObject jObjectResponse = new JSONObject(response);
+            JSONArray json = (JSONArray) jObjectResponse.get("snappedPoints");
+            Double latCentered = (Double)((JSONObject)(((JSONObject)(json).get(0)).get("location"))).get("latitude");
+            Double lonCentered = (Double)((JSONObject)(((JSONObject)(json).get(0)).get("location"))).get("longitude");
             // Persist the alert in the Android DB
             // TODO
             // We need create the alert and persist this
             // Example
             alert = new Alert();
-            alert.setLatitude(lat);
-            alert.setLongitude(lon);
+            alert.setLatitude(latCentered);
+            alert.setLongitude(lonCentered);
             //alert.setLatitude(-34.931707);
             //alert.setLongitude(-57.968201);
             JSONObject jObject = new JSONObject();

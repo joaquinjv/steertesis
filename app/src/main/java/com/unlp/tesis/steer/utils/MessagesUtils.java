@@ -214,6 +214,7 @@ public class MessagesUtils {
                 Bitmap bitmap = Bitmap.createScaledBitmap(origBitmap, newWidth, newHeight, true);
 
                 MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.anchor(0.5f, 0.5f);
                 markerOptions.position(latLng);
                 markerOptions.title(response.getString("name"));
                 //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
