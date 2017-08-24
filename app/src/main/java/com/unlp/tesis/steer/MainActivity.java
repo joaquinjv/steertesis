@@ -492,7 +492,16 @@ public class MainActivity extends AppCompatActivity implements
     private class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            actualLocation = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
+            //La primera vez actualiza la camara
+            if (actualLocation == null)
+            {
+                actualLocation = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
+                UpdateCamera();
+            }
+            else {
+                actualLocation = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
+            }
+
             if (actualLocation != null) {
 
                 if (mMap != null) {
