@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements
 
     protected LocationManager locationManager;
 
+    protected Location actualLocation;
+
     //Google Map
     public static GoogleMap mMap;
 
@@ -222,6 +224,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
                 return true;
+            }
+        });
+
+        FloatingActionButton locationButton = (FloatingActionButton) findViewById(R.id.fabMyLocation);
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UpdateCamera();
             }
         });
 
@@ -482,8 +492,8 @@ public class MainActivity extends AppCompatActivity implements
     private class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Location location = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
-            if (location != null) {
+            actualLocation = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
+            if (actualLocation != null) {
 
                 if (mMap != null) {
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -497,8 +507,8 @@ public class MainActivity extends AppCompatActivity implements
                         return;
                     }
                     mMap.setMyLocationEnabled(false);
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    new RequestPositionTask(MainActivity.this, location).execute();
+                    LatLng latLng = new LatLng(actualLocation.getLatitude(), actualLocation.getLongitude());
+                    new RequestPositionTask(MainActivity.this, actualLocation).execute();
                     /*
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     CameraPosition camPos = CameraPosition
@@ -597,6 +607,23 @@ public class MainActivity extends AppCompatActivity implements
         drawerLayout.closeDrawers();
 
         return true;
+    }
+
+    public void UpdateCamera()
+    {
+        LatLng latLng = new LatLng(actualLocation.getLatitude(), actualLocation.getLongitude());
+        CameraPosition camPos = CameraPosition
+                .builder(
+                        mMap.getCameraPosition() // current Camera
+                )
+                .bearing(actualLocation.getBearing())
+                .target(latLng)   //Centramos en mi ubicacion
+                .zoom(19)         //Establecemos el zoom en 19
+                //.bearing(45)      //Establecemos la orientación con el noreste arriba
+                .tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
+                .build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
+        mMap.animateCamera(cameraUpdate);
     }
 
     public String getToken() {

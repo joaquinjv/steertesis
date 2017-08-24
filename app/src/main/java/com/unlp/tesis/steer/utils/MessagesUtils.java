@@ -151,18 +151,18 @@ public class MessagesUtils {
                     .position(latLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                     */
-            CameraPosition camPos = CameraPosition
-                    .builder(
-                            mMap.getCameraPosition() // current Camera
-                    )
-                    //.bearing(location.getBearing())
-                    .target(latLng)   //Centramos en mi ubicacion
-                    .zoom(15)         //Establecemos el zoom en 19
-                    //.bearing(45)      //Establecemos la orientación con el noreste arriba
-                    //.tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
-                    .build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
-            mMap.animateCamera(cameraUpdate);
+//            CameraPosition camPos = CameraPosition
+//                    .builder(
+//                            mMap.getCameraPosition() // current Camera
+//                    )
+//                    //.bearing(location.getBearing())
+//                    .target(latLng)   //Centramos en mi ubicacion
+//                    .zoom(15)         //Establecemos el zoom en 19
+//                    //.bearing(45)      //Establecemos la orientación con el noreste arriba
+//                    //.tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
+//                    .build();
+//            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
+//            mMap.animateCamera(cameraUpdate);
 
             if (mCurrLocation != null) {
                 mCurrLocation.remove();
