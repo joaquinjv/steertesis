@@ -17,6 +17,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import static com.unlp.tesis.steer.Constants.E_CHARGE_POINT_OF_SALES;
+
 /**
  * Task to call one service to start, end o getStatus of user
  *
@@ -29,14 +31,16 @@ class RequestServiceTask extends AsyncTask<String, String, String> {
     private Context context;
     private JSONObject objectResponse = null;
 
+    private String service;
+
     public RequestServiceTask(Context context){
         this.context = context;
     }
 
     protected String doInBackground(String... services) {
         try {
-            String service = services[0];
-            URL url = new URL("http://163.10.20.80/universe-core/mobile/" + service);
+            this.setService(services[0]);
+            URL url = new URL("http://163.10.20.80/universe-core/mobile/" + this.getService());
             String param="celular=" + URLEncoder.encode("2215407348","UTF-8")+
                     "&token="+URLEncoder.encode(MainActivity.singletonVo.getTokenAthentication(),"UTF-8")+
                     "&version="+URLEncoder.encode("1","UTF-8")+
@@ -74,7 +78,11 @@ class RequestServiceTask extends AsyncTask<String, String, String> {
 
     protected void onPostExecute(String feed) {
         // We call the response for the user when try to get any service
-        MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
+        if (this.getService()==E_CHARGE_POINT_OF_SALES){
+            MessagesUtils.chargePointsOfSales(this.getContext(), this.getObjectResponse());
+        } else {
+            MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
+        }
 
     }
 
@@ -101,5 +109,13 @@ class RequestServiceTask extends AsyncTask<String, String, String> {
 
     public void setObjectResponse(JSONObject objectResponse) {
         this.objectResponse = objectResponse;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
     }
 }

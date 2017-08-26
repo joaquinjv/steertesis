@@ -68,6 +68,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.unlp.tesis.steer.Constants.E_CHARGE_POINT_OF_SALES;
 import static com.unlp.tesis.steer.Constants.E_END_PARKING;
 import static com.unlp.tesis.steer.Constants.E_START_PARKING;
 
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * The list of points of sales markers used in this sample.
      */
-    private List<Marker> pointOfSalesMarkers = new ArrayList<Marker>();
+    public static List<Marker> pointOfSalesMarkers = new ArrayList<Marker>();
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -559,7 +560,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private void setPointOfSales() {
+    private void setPointOfSales2() {
         DatabaseReference dbRef =
                 FirebaseDatabase.getInstance().getReference().child("pointOfSales");
         dbRef.addValueEventListener(
@@ -590,6 +591,10 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
         );
+    }
+
+    private void setPointOfSales() {
+        new RequestServiceTask(this).execute(E_CHARGE_POINT_OF_SALES);
     }
 
     public boolean navigationItemSelected(MenuItem menuItem) {

@@ -72,6 +72,7 @@ public final class Constants {
     public static final String E_START_PARKING = "iniciarEstacionamiento";
     public static final String E_END_PARKING = "finalizarEstacionamiento";
     public static final String E_STATE_OF_PARKING= "consultarEstado";
+    public static final String E_CHARGE_POINT_OF_SALES= "comerciosAdheridos";
     public static final String EVENT_CREATE_ALERT_POTHOLE = "bache";
     public static final String EVENT_CREATE_ALERT_COURT = "corte";
 
