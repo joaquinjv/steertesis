@@ -129,6 +129,7 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                         new RequestServiceTask(this.context).execute(serviceString);
                     } else if (matchAlert){
                         new RequestEventTask(this.context).execute(information);
+                        //new RequestCenitEventTask(this.context).execute(information);
                     } else {
                         Toast.makeText(context, "Comando " + result.get(0) + " incorrecto", Toast.LENGTH_SHORT).show();
                     }

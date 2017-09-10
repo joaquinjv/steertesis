@@ -5,27 +5,18 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
 import com.unlp.tesis.steer.MainActivity;
 import com.unlp.tesis.steer.R;
 import com.unlp.tesis.steer.entities.PointOfSale;
@@ -38,9 +29,10 @@ import java.util.Locale;
 
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT;
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
-import static com.unlp.tesis.steer.MainActivity.fab;
+import static com.unlp.tesis.steer.MainActivity.microphone;
 import static com.unlp.tesis.steer.MainActivity.mCurrLocation;
 import static com.unlp.tesis.steer.MainActivity.mMap;
+import static com.unlp.tesis.steer.MainActivity.parkingButton;
 import static com.unlp.tesis.steer.MainActivity.pointOfSalesMarkers;
 
 /**
@@ -59,6 +51,15 @@ public class MessagesUtils {
      */
     public static void generteAlertMessage(Context context, JSONObject response) {
         try {
+            if ((response.getString("errorCode") == "6") || (response.getString("errorCode") == "10")){
+                if (!MainActivity.getParkingStarted()){
+                    MainActivity.setParkingStarted(Boolean.TRUE);
+                    parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
+                } else {
+                    MainActivity.setParkingStarted(Boolean.FALSE);
+                    parkingButton.setImageResource(R.drawable.ic_logo_parking);
+                }
+            }
 
             final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
                     .setMessage("Saldo: $" + response.getString("saldo"));
@@ -72,7 +73,7 @@ public class MessagesUtils {
             title.setTextColor(Color.BLACK);
             dialog.setCustomTitle(title);
             final AlertDialog alert = dialog.create();
-            //alert.show();
+            alert.show();
 
             tts = (new TextToSpeech(context, new TextToSpeech.OnInitListener(){
                 @Override
@@ -104,16 +105,6 @@ public class MessagesUtils {
                     handler.removeCallbacks(runnable);
                 }
             });
-
-            if ((response.getString("errorCode") == "6") || (response.getString("errorCode") == "10")){
-                if (!MainActivity.getParkingStarted()){
-                    MainActivity.setParkingStarted(Boolean.TRUE);
-                    fab.setImageResource(R.drawable.ic_logo_parking_green);
-                } else {
-                    MainActivity.setParkingStarted(Boolean.FALSE);
-                    fab.setImageResource(R.drawable.ic_logo_parking);
-                }
-            }
 
             handler.postDelayed(runnable, 7000);
         } catch (Exception e) {
