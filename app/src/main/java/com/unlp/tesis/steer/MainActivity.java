@@ -34,6 +34,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements
 {
 
     /*NAV VIEW*/
-    private Toolbar appbar;
+//    private Toolbar appbar;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
     private TextView titleNavView;
@@ -154,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        appbar = (Toolbar)findViewById(R.id.appbar);
-        setSupportActionBar(appbar);
-
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_nav_menu);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        appbar = (Toolbar)findViewById(R.id.appbar);
+//        setSupportActionBar(appbar);
+//
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_nav_menu);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //get firebase auth instance
         mAuth = FirebaseAuth.getInstance();
@@ -179,8 +181,6 @@ public class MainActivity extends AppCompatActivity implements
         };
 
         titleNavView = (TextView)findViewById(R.id.titleNavView);
-       // titleNavView.setText("TETEATTAA");
-//        titleNavView.setText(userData.getName());
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         navView = (NavigationView)findViewById(R.id.navview);
         navView.setNavigationItemSelectedListener(
@@ -244,6 +244,14 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 UpdateCamera();
+            }
+        });
+
+        Button menuButton = (Button) findViewById(R.id.buttonMenu);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OpenNavigationView();
             }
         });
 
@@ -558,6 +566,8 @@ public class MainActivity extends AppCompatActivity implements
         mMap = googleMap;
         mMap.setMaxZoomPreference(17.0f);
         mMap.setMinZoomPreference(16.0f);
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setCompassEnabled(false);
         this.setPointOfSales();
     }
 
@@ -632,6 +642,11 @@ public class MainActivity extends AppCompatActivity implements
         drawerLayout.closeDrawers();
 
         return true;
+    }
+
+    public void OpenNavigationView()
+    {
+        drawerLayout.openDrawer(Gravity.LEFT);
     }
 
     public void UpdateCamera()

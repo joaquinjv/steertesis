@@ -22,16 +22,16 @@
         android:orientation="vertical"
         tools:context="com.unlp.tesis.steer.MainActivity">
         <!-- Toolbar -->
-        <android.support.v7.widget.Toolbar
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/appbar"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/appbar"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:minHeight="?attr/actionBarSize"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--android:elevation="4dp"-->
+            <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -40,6 +40,14 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/buttonMenu"
+                android:layout_width="60dp"
+                android:layout_height="70dp"
+                android:layout_gravity="left|top"
+                app:elevation="4dp"
+                android:background="@drawable/ic_menu_black_24dp"/>
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fabMyLocation"
