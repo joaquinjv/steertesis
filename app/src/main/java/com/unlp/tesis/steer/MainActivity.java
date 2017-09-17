@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        Button menuButton = (Button) findViewById(R.id.buttonMenu);
+        final Button menuButton = (Button) findViewById(R.id.buttonMenu);
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,6 +276,8 @@ public class MainActivity extends AppCompatActivity implements
                         } else {
                             titleNavView = (TextView)findViewById(R.id.titleNavView);
                             titleNavView.setText(user.getName());
+                            MenuItem menuPlate = (MenuItem) navView.getMenu().findItem(R.id.menu_plate);
+                            menuPlate.setTitle(user.getPlate());
                         }
                         // [END_EXCLUDE]
                     }
@@ -624,7 +626,7 @@ public class MainActivity extends AppCompatActivity implements
 //        Fragment fragment = null;
 
         switch (menuItem.getItemId()) {
-            case R.id.menu_seccion_1:
+            case R.id.menu_plate:
 //                fragment = new Fragment1();
 //                fragmentTransaction = true;
                 break;
