@@ -118,7 +118,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     /**
      * The current location.
      */
-    private Location mLocation;
+    private Location mLocation = null;
 
     /**
      * The list of geofences used in this sample.
@@ -233,7 +233,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "GoogleApiClient connected");
         try {
-            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             requestLocationUpdates();
         } catch (SecurityException unlikely) {
             Log.e(TAG, "Lost location permission." + unlikely);
@@ -254,6 +254,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
             logSecurityException(securityException);
         }
+
     }
 
     @Override
@@ -272,12 +273,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         Log.i(TAG, "New location: " + location);
 
-        mLocation = location;
-
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(Constants.ACTION_BROADCAST);
         intent.putExtra(Constants.EXTRA_LOCATION, location);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+        mLocation = location;
 
     }
 
@@ -338,57 +339,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             return mGeofencePendingIntent;
         }
         Intent intent = new Intent(getApplicationContext(), GeofenceTransitionsIntentService.class);
-        intent.putExtra(Constants.EXTRA_GEOFENCE, new Messenger(handlerResponse));
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
         return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private Handler handlerResponse = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            try {
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext())
-                        .setMessage("estaccccccc: $");
-
-                final String messageError = msg.toString();
-                TextView title = new TextView(getApplicationContext());
-                title.setText(messageError);
-                title.setGravity(Gravity.CENTER);
-                title.setTextSize(40);
-                title.setBackgroundColor(Color.parseColor("#8bc34a"));
-                title.setTextColor(Color.BLACK);
-                dialog.setCustomTitle(title);
-                final AlertDialog alert = dialog.create();
-                alert.show();
-
-                TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
-                textMessageView.setTextSize(30);
-
-                // Hide after some seconds
-                final Handler handler  = new Handler();
-                final Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (alert.isShowing()) {
-                            alert.dismiss();
-                        }
-                    }
-                };
-
-                alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        handler.removeCallbacks(runnable);
-                    }
-                });
-
-                handler.postDelayed(runnable, 70000);
-            } catch (Exception e) {
-                System.out.print(e);
-            }
-        }
-    };
     /**
      * Runs when the result of calling addGeofences() and removeGeofences() becomes available.
      * Either method can complete successfully or with an error.

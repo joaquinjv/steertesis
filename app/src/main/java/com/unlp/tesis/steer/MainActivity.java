@@ -5,14 +5,17 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -25,6 +28,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
@@ -60,6 +64,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.unlp.tesis.steer.entities.PointOfSale;
 import com.unlp.tesis.steer.entities.User;
+import com.unlp.tesis.steer.utils.MessagesUtils;
 import com.unlp.tesis.steer.utils.Preferences;
 
 import java.util.ArrayList;
@@ -287,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements
                         Log.w(TAG, "getUser:onCancelled", databaseError.toException());
                     }
                 });
-
     }
 
     @Override
@@ -400,6 +404,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
                 new IntentFilter(Constants.ACTION_BROADCAST));
+        checkGeofenceStatus(Preferences.getGeofenceStatus(this));
     }
 
     @Override
@@ -506,7 +511,25 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals(Preferences.KEY_GEOFENCE_STATUS)) {
+            checkGeofenceStatus(Preferences.getGeofenceStatus(this));
+        }
+    }
 
+    public void checkGeofenceStatus(String value)
+    {
+        switch (value) {
+            case Preferences.KEY_GEOFENCE_STATUS_IN:
+                parkingButton.setImageResource(R.drawable.ic_logo_parking);
+                MessagesUtils.generteGeofenceAlert(this, Preferences.getGeofenceStatusMessage(this));
+                break;
+            case Preferences.KEY_GEOFENCE_STATUS_OUT:
+                parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
+                break;
+            case Preferences.KEY_GEOFENCE_STATUS_PAID:
+                parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
+                break;
+        }
     }
     /**
      * Receiver for broadcasts sent by {@link LocationService}.

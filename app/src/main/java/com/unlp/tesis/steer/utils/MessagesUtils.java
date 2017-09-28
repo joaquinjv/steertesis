@@ -271,4 +271,53 @@ public class MessagesUtils {
         }
     }
 
+    /**
+     * It's used for message to start and end the parking
+     * @param context
+     * @param response
+     */
+    public static void generteGeofenceAlert(Context context, String response) {
+        try {
+
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
+                    .setMessage(response);
+
+            final String titulo = "Ha ingresado en una zona de estacionamiento medido";
+            TextView title = new TextView(context);
+            title.setText(titulo);
+            title.setGravity(Gravity.CENTER);
+            title.setTextSize(30);
+            title.setBackgroundColor(Color.parseColor("#8bc34a"));
+            title.setTextColor(Color.BLACK);
+            dialog.setCustomTitle(title);
+            final AlertDialog alert = dialog.create();
+            alert.show();
+
+            TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
+            textMessageView.setTextSize(30);
+
+            // Hide after some seconds
+            final Handler handler  = new Handler();
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (alert.isShowing()) {
+                        alert.dismiss();
+                    }
+                }
+            };
+
+            alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    handler.removeCallbacks(runnable);
+                }
+            });
+
+            handler.postDelayed(runnable, 7000);
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+    }
+
 }

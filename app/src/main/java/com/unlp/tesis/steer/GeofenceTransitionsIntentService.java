@@ -27,6 +27,8 @@ import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
+import com.unlp.tesis.steer.utils.MessagesUtils;
+import com.unlp.tesis.steer.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +90,15 @@ public class GeofenceTransitionsIntentService extends IntentService {
                     triggeringGeofences
             );
 
+            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
+                Preferences.setGeofenceStatusMessage(getApplicationContext(), geofenceTransitionDetails);
+                Preferences.setGeofenceStatus(getApplicationContext(), Preferences.KEY_GEOFENCE_STATUS_IN);
+            }else{
+                Preferences.setGeofenceStatus(getApplicationContext(), Preferences.KEY_GEOFENCE_STATUS_OUT);
+                Preferences.setGeofenceStatusMessage(getApplicationContext(), "");
+            }
             // Send notification and log the transition details.
-            sendNotification(intent, geofenceTransitionDetails);
+            //sendNotification(intent, geofenceTransitionDetails);
             Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.
