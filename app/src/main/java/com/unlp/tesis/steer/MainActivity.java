@@ -516,14 +516,19 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    /*
+    * check the geofence status and update the view
+    **/
     public void checkGeofenceStatus(String value)
     {
         switch (value) {
             case Preferences.KEY_GEOFENCE_STATUS_IN:
+                parkingButton.setEnabled(true);
                 parkingButton.setImageResource(R.drawable.ic_logo_parking);
                 MessagesUtils.generteGeofenceAlert(this, Preferences.getGeofenceStatusMessage(this));
                 break;
             case Preferences.KEY_GEOFENCE_STATUS_OUT:
+                parkingButton.setEnabled(false);
                 parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
                 break;
             case Preferences.KEY_GEOFENCE_STATUS_PAID:
