@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.unlp.tesis.steer.utils.HelperUtils;
 import com.unlp.tesis.steer.utils.MessagesUtils;
 
 import org.json.JSONObject;
@@ -49,10 +50,10 @@ class RequestPositionTask extends AsyncTask<String, String, String> {
             //send the POST out
             PrintWriter out = new PrintWriter(conn.getOutputStream());
             out.close();
-            System.out.println("Response Code: " + conn.getResponseCode());
+            //System.out.println("Response Code: " + conn.getResponseCode());
             InputStream in = new BufferedInputStream(conn.getInputStream());
             String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-            System.out.println(response);
+            //System.out.println(response);
             try {
                 JSONObject jObject = new JSONObject(response);
                 this.setObjectResponse(jObject);
@@ -71,7 +72,7 @@ class RequestPositionTask extends AsyncTask<String, String, String> {
 
     protected void onPostExecute(String feed) {
         // We call the response for the user when try to get any service
-        MessagesUtils.updateMapCamera(this.getContext(), this.getObjectResponse(), this.location);
+        HelperUtils.updateMapCamera(this.getContext(), this.getObjectResponse(), this.location);
     }
 
 

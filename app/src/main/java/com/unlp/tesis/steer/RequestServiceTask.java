@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 
+import com.unlp.tesis.steer.utils.HelperUtils;
 import com.unlp.tesis.steer.utils.MessagesUtils;
 
 import org.json.JSONObject;
@@ -79,7 +80,7 @@ class RequestServiceTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String feed) {
         // We call the response for the user when try to get any service
         if (this.getService()==E_CHARGE_POINT_OF_SALES){
-            MessagesUtils.chargePointsOfSales(this.getContext(), this.getObjectResponse());
+            HelperUtils.chargePointsOfSales(this.getContext(), this.getObjectResponse());
         } else {
             MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
         }

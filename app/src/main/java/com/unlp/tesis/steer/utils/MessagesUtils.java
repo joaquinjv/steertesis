@@ -75,15 +75,7 @@ public class MessagesUtils {
             final AlertDialog alert = dialog.create();
             alert.show();
 
-            tts = (new TextToSpeech(context, new TextToSpeech.OnInitListener(){
-                @Override
-                public void onInit(int status) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        tts.setLanguage(new Locale("ar"));
-                        tts.speak(messageError, TextToSpeech.QUEUE_FLUSH, null, null);
-                    }
-                }
-            }));
+            playAudioMessage(context, messageError);
 
             TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
             textMessageView.setTextSize(30);
@@ -110,119 +102,6 @@ public class MessagesUtils {
         } catch (Exception e) {
             System.out.print(e);
         }
-    }
-
-    /**
-     * It's used for message to start and end the parking
-     * @param context
-     * @param response
-     */
-    public static void chargePointsOfSales(Context context, JSONObject response) {
-        try {
-            JSONArray jsonArray = (JSONArray) (new JSONObject(response.getString("extra")).get("comercios"));
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject explrObject = jsonArray.getJSONObject(i);
-                if (!(explrObject.get("latitud").equals("")) && !(explrObject.get("longitud").equals(""))){
-                    PointOfSale pos = new PointOfSale(
-                            explrObject.get("nombre").toString(),explrObject.get("direccion").toString(),
-                            explrObject.get("latitud").toString(),explrObject.get("longitud").toString());
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .position(new LatLng(pos.getLatitude(), pos.getLongitude()))
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                            .title(pos.getName())
-                            .snippet(pos.getDetails());
-                    if (mMap != null) {
-                        // Remove last geoFenceMarker
-                        //if (geoFenceMarker != null)
-                        //    geoFenceMarker.remove();
-                        pointOfSalesMarkers.add(mMap.addMarker(markerOptions));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-            String a;
-        }
-    }
-
-    /**
-     * It's used for message to start and end the parking
-     * @param context
-     * @param response
-     */
-    public static void updateMapCamera(Context context, JSONObject response, Location location) {
-        JSONArray json;
-        Circle accuracyCircle = null;
-        try {
-            json = (JSONArray) response.get("snappedPoints");
-            Double lat = (Double)((JSONObject)(((JSONObject)(json).get(0)).get("location"))).get("latitude");
-            Double lon = (Double)((JSONObject)(((JSONObject)(json).get(0)).get("location"))).get("longitude");
-            LatLng latLng = new LatLng(lat,lon);
-            location.setLatitude(lat);
-            location.setLongitude(lon);
-            /*
-            CameraPosition camPos = CameraPosition
-                    .builder(
-                            mMap.getCameraPosition() // current Camera
-                    )
-//                    .bearing(location.getBearing())
-                    .target(latLng)   //Centramos en mi ubicacion
-                    .zoom(19)         //Establecemos el zoom en 19
-                    //.bearing(45)      //Establecemos la orientación con el noreste arriba
-//                    .tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
-                    .build();
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 19);
-            mMap.animateCamera(cameraUpdate);
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                    */
-//            CameraPosition camPos = CameraPosition
-//                    .builder(
-//                            mMap.getCameraPosition() // current Camera
-//                    )
-//                    //.bearing(location.getBearing())
-//                    .target(latLng)   //Centramos en mi ubicacion
-//                    .zoom(15)         //Establecemos el zoom en 19
-//                    //.bearing(45)      //Establecemos la orientación con el noreste arriba
-//                    //.tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
-//                    .build();
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
-//            mMap.animateCamera(cameraUpdate);
-
-            if (mCurrLocation != null) {
-                mCurrLocation.remove();
-            }
-
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title("Current Position");
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            mCurrLocation = mMap.addMarker(markerOptions);
-            /*Toast.makeText(context, "Updated.!",
-                    Toast.LENGTH_SHORT).show();*/
-            /*
-            if (accuracyCircle != null) {
-                accuracyCircle.remove();
-            }
-            final CircleOptions accuracyCircleOptions = new CircleOptions()
-                    .center(latLng)
-                    .radius(location.getAccuracy())
-                    .fillColor(Color.argb(100, 130, 182, 228))
-                    .strokeWidth(0.01f);
-            mMap.addCircle(accuracyCircleOptions);
-            */
-            /*
-            if (mMap != null) {
-                // Remove last geoFenceMarker
-                //if (geoFenceMarker != null)
-                //    geoFenceMarker.remove();
-                mMap.addMarker(markerOptions);
-            }*/
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
     }
 
     /**
@@ -254,17 +133,10 @@ public class MessagesUtils {
                 //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
                 mMap.addMarker(markerOptions);
+
             }
 
-            tts = (new TextToSpeech(context, new TextToSpeech.OnInitListener(){
-                @Override
-                public void onInit(int status) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        tts.setLanguage(new Locale("ar"));
-                        tts.speak(messageError, TextToSpeech.QUEUE_FLUSH, null, null);
-                    }
-                }
-            }));
+            playAudioMessage(context, messageError);
 
         } catch (Exception e) {
             System.out.print(e);
@@ -282,7 +154,7 @@ public class MessagesUtils {
             final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
                     .setMessage(response);
 
-            final String titulo = "Ha ingresado en una zona de estacionamiento medido";
+            final String titulo = "Ingresó a zona de estacionamiento medido";
             TextView title = new TextView(context);
             title.setText(titulo);
             title.setGravity(Gravity.CENTER);
@@ -292,6 +164,8 @@ public class MessagesUtils {
             dialog.setCustomTitle(title);
             final AlertDialog alert = dialog.create();
             alert.show();
+
+            playAudioMessage(context, titulo);
 
             TextView textMessageView = (TextView) alert.findViewById(android.R.id.message);
             textMessageView.setTextSize(30);
@@ -317,6 +191,20 @@ public class MessagesUtils {
             handler.postDelayed(runnable, 7000);
         } catch (Exception e) {
             System.out.print(e);
+        }
+    }
+
+    private static void playAudioMessage(Context context, final String messageError){
+        if (Preferences.getAudioPreference(context)){
+            tts = (new TextToSpeech(context, new TextToSpeech.OnInitListener(){
+                @Override
+                public void onInit(int status) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        tts.setLanguage(new Locale("ar"));
+                        tts.speak(messageError, TextToSpeech.QUEUE_FLUSH, null, null);
+                    }
+                }
+            }));
         }
     }
 

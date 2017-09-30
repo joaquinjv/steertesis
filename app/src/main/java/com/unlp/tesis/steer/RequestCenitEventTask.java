@@ -50,26 +50,31 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
             //this.setEvent(services[0]);
             this.setEvent("crearEvento");
             URL url = new URL("http://163.10.181.26/MLP_CenIT_Service30/services/wssph.aspx");
-            String param="&email="+URLEncoder.encode("joaquin547@gmail.com", "UTF-8") +
-                    "&clave="+URLEncoder.encode("4807","UTF-8")+
-                    "&municipio="+URLEncoder.encode("7","UTF-8")+
-                    "&idUsuario="+URLEncoder.encode("7","UTF-8")+
+            String param=//"&agente="+URLEncoder.encode("8","UTF-8")+
+                    "version="+URLEncoder.encode("1.0","UTF-8")+
+                    "&idUsuario="+URLEncoder.encode("1","UTF-8")+
                     "&nombre="+URLEncoder.encode("steer","UTF-8")+
                     "&apellido="+URLEncoder.encode("steer","UTF-8")+
-                    "&direccion="+URLEncoder.encode("26 Nº 707","UTF-8")+
+                    //"&dni="+URLEncoder.encode("34403963","UTF-8")+
+                    "&email="+URLEncoder.encode("joaquin547@gmail.com", "UTF-8") +
+                    //"&email=joaquin547@gmail.com"+
+                    "&clave="+URLEncoder.encode("4807","UTF-8")+
+                    //"&claveActual="+URLEncoder.encode("","UTF-8")+
+                    //"&claveNueva="+URLEncoder.encode("","UTF-8")+
+                    //"&municipio="+URLEncoder.encode("1","UTF-8")+
+                    "&direccion="+URLEncoder.encode("26707","UTF-8")+
                     "&calle="+URLEncoder.encode("Calle 26","UTF-8")+
                     "&numero="+URLEncoder.encode("707","UTF-8")+
-                    "&tipo="+URLEncoder.encode("1","UTF-8")+
-                    "&idTipoAlerta="+URLEncoder.encode("8","UTF-8")+
-                    "&idDescripcionBreve="+URLEncoder.encode("8","UTF-8")+
-                    "&tipo="+URLEncoder.encode("1","UTF-8")+
-                    "&descripcion="+URLEncoder.encode("descripshon","UTF-8")+
-                    "&observacion=" + URLEncoder.encode("Obs ninguna","UTF-8")+
-                    "&fhInicio="+URLEncoder.encode("2017-09-09","UTF-8")+
-                    "&agente="+URLEncoder.encode("8","UTF-8")+
-                    "&nombreMunicipio="+URLEncoder.encode("La Plata","UTF-8")+
-                    "&version="+URLEncoder.encode("1.0","UTF-8")+
-                    "&fileName="+URLEncoder.encode("1","UTF-8")+
+                    "&tipo="+URLEncoder.encode("26","UTF-8")+
+                    "&descripcion="+URLEncoder.encode("167","UTF-8")+
+                    "&observacion=" + URLEncoder.encode("Obsninguna","UTF-8")+
+                    "&fhInicio="+URLEncoder.encode("2017-09-12","UTF-8")+
+                    //"&idEvento="+URLEncoder.encode("1","UTF-8")+
+                    //"&tipo="+URLEncoder.encode("1","UTF-8")+
+                    //"&descripcion="+URLEncoder.encode("descripshon","UTF-8")+
+                    "&nombreMunicipio="+URLEncoder.encode("LaPlata","UTF-8")+
+                    //"&codigoMunicipio="+URLEncoder.encode("La Plata","UTF-8")+
+                    //"&municipioHabilitado="+URLEncoder.encode("La Plata","UTF-8")+
                     "&latitud="+URLEncoder.encode("-34.930353","UTF-8")+
                     "&longitud="+URLEncoder.encode("-57.972417","UTF-8")+
                     "&op="+URLEncoder.encode(this.getEvent(),"UTF-8");
@@ -89,6 +94,9 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
             System.out.println(response);
             try {
                 JSONObject jObject = new JSONObject(response);
+                jObject.put("name", EVENT_CREATE_ALERT_POTHOLE);
+                jObject.put("lat", "-34.930353");
+                jObject.put("lon", "-57.972417");
                 this.setObjectResponse(jObject);
             } catch (Exception e) {
                 System.out.println(e);
@@ -106,8 +114,16 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String feed) {
         // We call the response for the user when try to get any service
         //MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
-        if (this.getEvent() == EVENT_CREATE_ALERT_POTHOLE){
-//            MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
+        /*if (this.getEvent() == EVENT_CREATE_ALERT_POTHOLE){
+            MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
+        }*/
+        try {
+            if (this.getObjectResponse().getString("errorCode").equals("11")) {
+                MessagesUtils.generteEventMessage(this.getContext(), this.getObjectResponse());
+            }
+        }  catch (Exception e) {
+            System.out.println("IOException!");
+            System.out.println(e.getMessage());
         }
     }
 
