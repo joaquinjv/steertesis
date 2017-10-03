@@ -8,14 +8,16 @@ public class GeofencePoint {
     private int radius;
     private double latitude;
     private double longitude;
+    private String paidParkingAreaId;
 
     public GeofencePoint() {
     }
 
-    public GeofencePoint(int radius, double latitude, double longitude) {
+    public GeofencePoint(int radius, double latitude, double longitude, String paidParkingAreaId) {
         this.radius = radius;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.paidParkingAreaId = paidParkingAreaId;
     }
 
     public int getRadius() {
@@ -42,4 +44,11 @@ public class GeofencePoint {
         this.longitude = longitude;
     }
 
+    public String getPaidParkingAreaId() {
+        return paidParkingAreaId;
+    }
+
+    public void setPaidParkingAreaId(String paidParkingAreaId) {
+        this.paidParkingAreaId = paidParkingAreaId;
+    }
 }

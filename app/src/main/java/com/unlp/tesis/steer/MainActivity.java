@@ -300,24 +300,23 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void SoloUnaVez (){
+
         List<GeofencePoint> lg = new ArrayList<GeofencePoint>();
-        lg.add(new GeofencePoint(50,-34.9428192,-57.9656825));
-        lg.add(new GeofencePoint(50,-34.9419671,-57.9646975));
-        lg.add(new GeofencePoint(50,-34.9410528,-57.9637056));
-
-        PaidParkingArea zonaPedro = new PaidParkingArea("PEDRO", 5, 8, 20, lg);
-
         String newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
+        lg.add(new GeofencePoint(50,-34.9428192,-57.9656825, newPPAKey));
+        lg.add(new GeofencePoint(50,-34.9419671,-57.9646975, newPPAKey));
+        lg.add(new GeofencePoint(50,-34.9410528,-57.9637056, newPPAKey));
+        PaidParkingArea zonaPedro = new PaidParkingArea("PEDRO", 5, 8, 20, lg);
         mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaPedro);
 
         List<GeofencePoint> lg2 = new ArrayList<GeofencePoint>();
-        lg2.add(new GeofencePoint(50,-34.9306643,-57.9727699));
-
-        PaidParkingArea zonaJoaco = new PaidParkingArea("JOACO", 5, 8, 20, lg2);
         newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
+        lg2.add(new GeofencePoint(50,-34.9306643,-57.9727699, newPPAKey));
+        PaidParkingArea zonaJoaco = new PaidParkingArea("JOACO", 5, 8, 20, lg2);
         mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaJoaco);
 
     }
+
 
     @Override
     public void onBackPressed(){
