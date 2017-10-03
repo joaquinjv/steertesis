@@ -1,55 +1,68 @@
 package com.unlp.tesis.steer.entities;
 
+import java.util.List;
+
 /**
  * Created by pedro on 18/10/16.
  */
 
 public class PaidParkingArea {
 
-    private float radius;
-    private float latitude;
-    private float longitude;
-    private PaidParkingAreasType type;
+
+    private String description;
+    private float price;
+    private int startTime;
+    private int endTime;
+    private List<GeofencePoint> geofencePoints;
 
     public PaidParkingArea() {
     }
 
-    public PaidParkingArea(float radius, float latitude, float longitude, PaidParkingAreasType type) {
-        this.radius = radius;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.type =type;
+    public PaidParkingArea(String description, float price, int startTime, int endTime, List<GeofencePoint> geofencePoints){
+        this.description = description;
+        this.price = price;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.geofencePoints = geofencePoints;
     }
 
-    public float getRadius() {
-        return radius;
+    public String getDescription() {
+        return description;
     }
 
-    public void setRadius(float radius) {
-        this.radius = radius;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public float getLatitude() {
-        return latitude;
+    public float getPrice() {
+        return price;
     }
 
-    public void setLatitude(float latitude) {
-        this.latitude = latitude;
+    public void setPrice(float price) {
+        this.price = price;
     }
 
-    public float getLongitude() {
-        return longitude;
+    public int getStartTime() {
+        return startTime;
     }
 
-    public void setLongitude(float longitude) {
-        this.longitude = longitude;
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
     }
 
-    public PaidParkingAreasType getType() {
-        return type;
+    public int getEndTime() {
+        return endTime;
     }
 
-    public void setType(PaidParkingAreasType type) {
-        this.type = type;
+    public void setEndTime(int endTime) {
+        this.endTime = endTime;
+    }
+
+    public List<GeofencePoint> getGeofencePoints() {
+        return geofencePoints;
+    }
+
+    public void setGeofencePoints(List<GeofencePoint> geofencePoints) {
+        this.geofencePoints = geofencePoints;
     }
 }

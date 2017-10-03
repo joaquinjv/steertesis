@@ -62,6 +62,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.unlp.tesis.steer.entities.GeofencePoint;
+import com.unlp.tesis.steer.entities.PaidParkingArea;
 import com.unlp.tesis.steer.entities.PointOfSale;
 import com.unlp.tesis.steer.entities.User;
 import com.unlp.tesis.steer.utils.MessagesUtils;
@@ -292,6 +294,28 @@ public class MainActivity extends AppCompatActivity implements
                         Log.w(TAG, "getUser:onCancelled", databaseError.toException());
                     }
                 });
+
+        //SoloUnaVez();
+    }
+
+    public void SoloUnaVez (){
+        List<GeofencePoint> lg = new ArrayList<GeofencePoint>();
+        lg.add(new GeofencePoint(50,-34.9428192,-57.9656825));
+        lg.add(new GeofencePoint(50,-34.9419671,-57.9646975));
+        lg.add(new GeofencePoint(50,-34.9410528,-57.9637056));
+
+        PaidParkingArea zonaPedro = new PaidParkingArea("PEDRO", 5, 8, 20, lg);
+
+        String newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
+        mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaPedro);
+
+        List<GeofencePoint> lg2 = new ArrayList<GeofencePoint>();
+        lg2.add(new GeofencePoint(50,-34.9306643,-57.9727699));
+
+        PaidParkingArea zonaJoaco = new PaidParkingArea("JOACO", 5, 8, 20, lg2);
+        newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
+        mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaJoaco);
+
     }
 
     @Override
