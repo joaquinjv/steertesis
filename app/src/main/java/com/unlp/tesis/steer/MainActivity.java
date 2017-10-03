@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements
     public static GoogleMap mMap;
 
     private static Boolean parkingStarted = Boolean.FALSE;
+    private static Boolean endParkingForced = Boolean.FALSE;
 
     public static SingletonVo singletonVo = SingletonVo.getInstance();
 
@@ -554,6 +555,10 @@ public class MainActivity extends AppCompatActivity implements
             case Preferences.KEY_GEOFENCE_STATUS_OUT:
                 parkingButton.setEnabled(false);
                 parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
+                if (getParkingStarted()){
+                    setEndParkingForced(Boolean.TRUE);
+                    new RequestServiceTask(this).execute(E_END_PARKING);
+                }
                 break;
             case Preferences.KEY_GEOFENCE_STATUS_PAID:
                 parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
@@ -751,5 +756,13 @@ public class MainActivity extends AppCompatActivity implements
 
     public static void setParkingButton(FloatingActionButton parkingButton) {
         MainActivity.parkingButton = parkingButton;
+    }
+
+    public static Boolean getEndParkingForced() {
+        return endParkingForced;
+    }
+
+    public static void setEndParkingForced(Boolean endParkingForced) {
+        MainActivity.endParkingForced = endParkingForced;
     }
 }

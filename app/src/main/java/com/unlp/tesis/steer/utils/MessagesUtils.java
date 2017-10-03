@@ -55,9 +55,13 @@ public class MessagesUtils {
                 if (!MainActivity.getParkingStarted()){
                     MainActivity.setParkingStarted(Boolean.TRUE);
                     parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
-                } else {
+                } else if (!MainActivity.getEndParkingForced()){
                     MainActivity.setParkingStarted(Boolean.FALSE);
                     parkingButton.setImageResource(R.drawable.ic_logo_parking);
+                } else {
+                    MainActivity.setParkingStarted(Boolean.FALSE);
+                    MainActivity.setEndParkingForced(Boolean.FALSE);
+                    parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
                 }
             }
 
