@@ -57,14 +57,14 @@ public final class Constants {
     /**
      * Map for storing information about airports in the San Francisco bay area.
      */
-    public static final HashMap<String, LatLng> LAPLATA_GEOFENCES_AREAS = new HashMap<String, LatLng>();
-    static {
-        // San Francisco International Airport.
-        LAPLATA_GEOFENCES_AREAS.put("PEDRO", new LatLng(-34.942166,-57.9655665));
-
-        // Googleplex.
-        LAPLATA_GEOFENCES_AREAS.put("JOACO", new LatLng(-34.9306643,-57.9727699));
-    }
+//    public static final HashMap<String, LatLng> LAPLATA_GEOFENCES_AREAS = new HashMap<String, LatLng>();
+//    static {
+//        // San Francisco International Airport.
+//        LAPLATA_GEOFENCES_AREAS.put("PEDRO", new LatLng(-34.942166,-57.9655665));
+//
+//        // Googleplex.
+//        LAPLATA_GEOFENCES_AREAS.put("JOACO", new LatLng(-34.9306643,-57.9727699));
+//    }
 
     /**
      * Constants for operations to do in the server

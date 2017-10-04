@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
@@ -52,6 +53,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -446,6 +449,7 @@ public class MainActivity extends AppCompatActivity implements
             unbindService(mServiceConnection);
             mBound = false;
         }
+        Preferences.setGeofenceStatus(this, Preferences.KEY_GEOFENCE_STATUS_OUT);
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
         super.onStop();
@@ -627,6 +631,7 @@ public class MainActivity extends AppCompatActivity implements
         UiSettings uiSettings = mMap.getUiSettings();
         uiSettings.setCompassEnabled(false);
         this.setPointOfSales();
+        populateGeofenceMarker();
     }
 
     /**
@@ -763,5 +768,55 @@ public class MainActivity extends AppCompatActivity implements
 
     public static void setEndParkingForced(Boolean endParkingForced) {
         MainActivity.endParkingForced = endParkingForced;
+    }
+
+    /**
+     * This sample hard codes geofence data. A real app might dynamically create geofences based on
+     * the user's location.
+     */
+    public void populateGeofenceMarker() {
+        mDatabase.child("paidParkingAreas").addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        double v1, v2;
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Log.e(TAG, "dataChange reading db");
+                            // Get Post object and use the values to update the UI
+                            PaidParkingArea ppa = ds.getValue(PaidParkingArea.class);
+
+                            for (GeofencePoint gp : ppa.getGeofencePoints()){
+
+                                CircleOptions circleOptions = new CircleOptions();
+
+                                v1 = gp.getLatitude();
+                                v2= gp.getLongitude();
+                                circleOptions.center(new LatLng(v1,v2));
+                                circleOptions.strokeWidth(5);
+                                circleOptions.radius(gp.getRadius());
+                                circleOptions.strokeColor(Color.RED);
+                                circleOptions.fillColor(Color.BLUE);
+                                mMap.addCircle(circleOptions);
+
+                            }
+                        }
+                        CircleOptions circleOptions = new CircleOptions();
+
+                        v1 = -34.9315649;
+                        v2= -57.9558615;
+                        circleOptions.center(new LatLng(v1,v2));
+                        circleOptions.strokeWidth(5);
+                        circleOptions.radius(300);
+                        circleOptions.strokeColor(Color.RED);
+                        circleOptions.fillColor(Color.BLUE);
+                        mMap.addCircle(circleOptions);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "Error reading db");
+                    }
+                }
+        );
     }
 }

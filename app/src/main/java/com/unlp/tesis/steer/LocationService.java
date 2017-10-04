@@ -54,7 +54,17 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.unlp.tesis.steer.entities.GeofencePoint;
+import com.unlp.tesis.steer.entities.PaidParkingArea;
+import com.unlp.tesis.steer.entities.PointOfSale;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -130,6 +140,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
      */
     private PendingIntent mGeofencePendingIntent;
 
+    private DatabaseReference mDatabase;
+
+
     public LocationService() {
     }
 
@@ -137,10 +150,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onCreate() {
         //GEOFENCES
         // Empty list for storing geofences.
+
         mGeofenceList = new ArrayList<Geofence>();
         // Initially set the PendingIntent used in addGeofences() and removeGeofences() to null.
         mGeofencePendingIntent = null;
         // Get the geofences used. Geofence data is hard coded in this sample.
+        //Get Firebase database instance
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         populateGeofenceList();
 
         if (mGoogleApiClient == null) {
@@ -239,22 +255,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             Log.e(TAG, "Lost location permission." + unlikely);
         }
 
-        //INIT  GEOFENCES
-        try {
-            LocationServices.GeofencingApi.addGeofences(
-                    mGoogleApiClient,
-                    // The GeofenceRequest object.
-                    getGeofencingRequest(),
-                    // A pending intent that that is reused when calling removeGeofences(). This
-                    // pending intent is used to generate an intent when a matched geofence
-                    // transition is observed.
-                    getGeofencePendingIntent()
-            ).setResultCallback(this); // Result processed in onResult().
-        } catch (SecurityException securityException) {
-            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
-            logSecurityException(securityException);
-        }
-
     }
 
     @Override
@@ -305,6 +305,24 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private void logSecurityException(SecurityException securityException) {
         Log.e(TAG, "Invalid location permission. " +
                 "You need to use ACCESS_FINE_LOCATION with geofences", securityException);
+    }
+
+    private void InitGeofence() {
+        //INIT  GEOFENCES
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    // The GeofenceRequest object.
+                    getGeofencingRequest(),
+                    // A pending intent that that is reused when calling removeGeofences(). This
+                    // pending intent is used to generate an intent when a matched geofence
+                    // transition is observed.
+                    getGeofencePendingIntent()
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+            logSecurityException(securityException);
+        }
     }
 
     /**
@@ -368,32 +386,50 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
      * the user's location.
      */
     public void populateGeofenceList() {
-        for (Map.Entry<String, LatLng> entry : Constants.LAPLATA_GEOFENCES_AREAS.entrySet()) {
+        mDatabase.child("paidParkingAreas").addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Log.e(TAG, "dataChange reading db");
+                            // Get Post object and use the values to update the UI
+                            PaidParkingArea ppa = ds.getValue(PaidParkingArea.class);
+                            int i = 0;
+                            for (GeofencePoint gp : ppa.getGeofencePoints()){
+                                mGeofenceList.add(new Geofence.Builder()
+                                        // Set the request ID of the geofence. This is a string to identify this
+                                        // geofence.
+                                        .setRequestId(gp.getPaidParkingAreaId()+"@@"+i)
 
-            mGeofenceList.add(new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
-                    .setRequestId(entry.getKey())
+                                        // Set the circular region of this geofence.
+                                        .setCircularRegion(
+                                                gp.getLatitude(),
+                                                gp.getLongitude(),
+                                                gp.getRadius()
+                                        )
 
-                    // Set the circular region of this geofence.
-                    .setCircularRegion(
-                            entry.getValue().latitude,
-                            entry.getValue().longitude,
-                            Constants.GEOFENCE_RADIUS_IN_METERS
-                    )
+                                        // Set the expiration duration of the geofence. This geofence gets automatically
+                                        // removed after this period of time.
+                                        .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
 
-                    // Set the expiration duration of the geofence. This geofence gets automatically
-                    // removed after this period of time.
-                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                                        // Set the transition types of interest. Alerts are only generated for these
+                                        // transition. We track entry and exit transitions in this sample.
+                                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                                Geofence.GEOFENCE_TRANSITION_EXIT)
 
-                    // Set the transition types of interest. Alerts are only generated for these
-                    // transition. We track entry and exit transitions in this sample.
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                                        // Create the geofence.
+                                        .build());
+                                i++;
+                            }
+                        }
+                        InitGeofence();
+                    }
 
-                    // Create the geofence.
-                    .build());
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "Error reading db");
+                    }
+                }
+        );
     }
-
 }
