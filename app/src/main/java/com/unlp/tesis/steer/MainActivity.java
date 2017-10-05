@@ -434,11 +434,11 @@ public class MainActivity extends AppCompatActivity implements
         checkGeofenceStatus(Preferences.getGeofenceStatus(this));
     }
 
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
-        super.onPause();
-    }
+//    @Override
+//    protected void onPause() {
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
+//        super.onPause();
+//    }
 
     @Override
     protected void onStop() {
@@ -631,7 +631,9 @@ public class MainActivity extends AppCompatActivity implements
         UiSettings uiSettings = mMap.getUiSettings();
         uiSettings.setCompassEnabled(false);
         this.setPointOfSales();
-        populateGeofenceMarker();
+
+        //PARA PRUEBA
+        //populateGeofenceMarker();
     }
 
     /**
@@ -771,6 +773,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
+     * PARA PRUEBA
+     *
      * This sample hard codes geofence data. A real app might dynamically create geofences based on
      * the user's location.
      */
