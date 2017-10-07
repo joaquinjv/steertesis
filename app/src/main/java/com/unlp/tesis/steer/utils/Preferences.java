@@ -12,7 +12,7 @@ public class Preferences {
 
     static final String KEY_AUDIO_PREFERENCES= "audio_preferences";
     public static final String KEY_GEOFENCE_STATUS= "geofence_status";
-    public static final String KEY_GEOFENCE_STATUS_MESSAGE= "geofence_status_message";
+    public static final String KEY_GEOFENCE_STATUS_TRIGGERED_ID= "geofence_status_triggered_id";
 
     public static final String KEY_GEOFENCE_STATUS_IN= "geofence_status_in";
     public static final String KEY_GEOFENCE_STATUS_OUT= "geofence_status_out";
@@ -46,15 +46,15 @@ public class Preferences {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_GEOFENCE_STATUS, "");
     }
 
-    public static void setGeofenceStatusMessage(Context context, String value) {
+    public static void setGeofenceStatusTriggeredId(Context context, String value) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putString(KEY_GEOFENCE_STATUS_MESSAGE, value)
+                .putString(KEY_GEOFENCE_STATUS_TRIGGERED_ID, value)
                 .apply();
     }
 
-    public static String getGeofenceStatusMessage(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_GEOFENCE_STATUS_MESSAGE, "");
+    public static String getGeofenceStatusTriggeredId(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_GEOFENCE_STATUS_TRIGGERED_ID, "");
     }
 
 }

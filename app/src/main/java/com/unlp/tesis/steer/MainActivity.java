@@ -553,7 +553,30 @@ public class MainActivity extends AppCompatActivity implements
             case Preferences.KEY_GEOFENCE_STATUS_IN:
                 parkingButton.setEnabled(true);
                 parkingButton.setImageResource(R.drawable.ic_logo_parking);
-                MessagesUtils.generteGeofenceAlert(this, Preferences.getGeofenceStatusMessage(this));
+                if (Preferences.getGeofenceStatusTriggeredId(this).length()>0) {
+                    mDatabase.child("paidParkingAreas").child(Preferences.getGeofenceStatusTriggeredId(this)).addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    // Get paidParkingArea
+
+                                    PaidParkingArea ppa = dataSnapshot.getValue(PaidParkingArea.class);
+                                    Log.e(TAG, "read ppa");
+                                    if (ppa != null) {
+                                        // User is null, error out
+                                        Log.e(TAG, "read ppa");
+                                        Log.e(TAG, ppa.toString());
+                                        GenerteGeofenceAlert(ppa.toString());
+                                    }                                     // [END_EXCLUDE]
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                                }
+                            });
+                }
+                //MessagesUtils.generteGeofenceAlert(this, Preferences.getGeofenceStatusMessage(this));
                 break;
             case Preferences.KEY_GEOFENCE_STATUS_OUT:
                 parkingButton.setEnabled(false);
@@ -567,6 +590,11 @@ public class MainActivity extends AppCompatActivity implements
                 parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
                 break;
         }
+    }
+
+    public void GenerteGeofenceAlert(String message)
+    {
+        MessagesUtils.generteGeofenceAlert(this, message);
     }
     /**
      * Receiver for broadcasts sent by {@link LocationService}.

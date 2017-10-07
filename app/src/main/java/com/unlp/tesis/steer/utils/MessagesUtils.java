@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -194,6 +195,7 @@ public class MessagesUtils {
 
             handler.postDelayed(runnable, 7000);
         } catch (Exception e) {
+            Log.e("s", e.toString());
             System.out.print(e);
         }
     }

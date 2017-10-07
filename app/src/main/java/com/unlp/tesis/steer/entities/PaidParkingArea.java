@@ -65,4 +65,11 @@ public class PaidParkingArea {
     public void setGeofencePoints(List<GeofencePoint> geofencePoints) {
         this.geofencePoints = geofencePoints;
     }
+
+    public String toString()
+    {
+        return "Zona:" + this.description
+                + " Horario de :" + this.startTime+ " a " + this.endTime
+                + " Precio: $" +this.price+" por hora";
+    }
 }

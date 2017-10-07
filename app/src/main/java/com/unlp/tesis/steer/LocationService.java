@@ -399,7 +399,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                                 mGeofenceList.add(new Geofence.Builder()
                                         // Set the request ID of the geofence. This is a string to identify this
                                         // geofence.
-                                        .setRequestId(gp.getPaidParkingAreaId()+"@@"+i)
+                                        .setRequestId(gp.getPaidParkingAreaId()+Constants.GEOFENCE_ID_DELIMITER+i)
 
                                         // Set the circular region of this geofence.
                                         .setCircularRegion(
