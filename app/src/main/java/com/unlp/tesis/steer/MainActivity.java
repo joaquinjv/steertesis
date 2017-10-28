@@ -132,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements
 
     public static LatLng eventZone = null;
 
+    //True when app start or restart
+    public static boolean bShowGeofenceMessage;
+
     /**
      * The list of points of sales markers used in this sample.
      */
@@ -424,6 +427,8 @@ public class MainActivity extends AppCompatActivity implements
         // that since this activity is in the foreground, the service can exit foreground mode.
         bindService(new Intent(this, LocationService.class), mServiceConnection,
                 Context.BIND_AUTO_CREATE);
+
+        bShowGeofenceMessage = true;
     }
 
     @Override
@@ -431,7 +436,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
                 new IntentFilter(Constants.ACTION_BROADCAST));
-        checkGeofenceStatus(Preferences.getGeofenceStatus(this));
+        checkGeofenceStatus(Preferences.getGeofenceStatus(this), bShowGeofenceMessage);
+        bShowGeofenceMessage = false;
     }
 
 //    @Override
@@ -540,41 +546,43 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (s.equals(Preferences.KEY_GEOFENCE_STATUS)) {
-            checkGeofenceStatus(Preferences.getGeofenceStatus(this));
+            checkGeofenceStatus(Preferences.getGeofenceStatus(this), true);
         }
     }
 
     /*
     * check the geofence status and update the view
     **/
-    public void checkGeofenceStatus(String value)
+    public void checkGeofenceStatus(String value, boolean bShowMessage)
     {
         switch (value) {
             case Preferences.KEY_GEOFENCE_STATUS_IN:
                 parkingButton.setEnabled(true);
                 parkingButton.setImageResource(R.drawable.ic_logo_parking);
-                if (Preferences.getGeofenceStatusTriggeredId(this).length()>0) {
-                    mDatabase.child("paidParkingAreas").child(Preferences.getGeofenceStatusTriggeredId(this)).addListenerForSingleValueEvent(
-                            new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    // Get paidParkingArea
+                if (bShowMessage) {
+                    if (Preferences.getGeofenceStatusTriggeredId(this).length() > 0) {
+                        mDatabase.child("paidParkingAreas").child(Preferences.getGeofenceStatusTriggeredId(this)).addListenerForSingleValueEvent(
+                                new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        // Get paidParkingArea
 
-                                    PaidParkingArea ppa = dataSnapshot.getValue(PaidParkingArea.class);
-                                    Log.e(TAG, "read ppa");
-                                    if (ppa != null) {
-                                        // User is null, error out
+                                        PaidParkingArea ppa = dataSnapshot.getValue(PaidParkingArea.class);
                                         Log.e(TAG, "read ppa");
-                                        Log.e(TAG, ppa.toString());
-                                        GenerteGeofenceAlert(ppa.toString());
-                                    }                                     // [END_EXCLUDE]
-                                }
+                                        if (ppa != null) {
+                                            // User is null, error out
+                                            Log.e(TAG, "read ppa");
+                                            Log.e(TAG, ppa.toString());
+                                            GenerteGeofenceAlert(ppa.toString());
+                                        }                                     // [END_EXCLUDE]
+                                    }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                                    }
+                                });
+                    }
                 }
                 //MessagesUtils.generteGeofenceAlert(this, Preferences.getGeofenceStatusMessage(this));
                 break;
