@@ -18,6 +18,7 @@ public class Preferences {
     public static final String KEY_GEOFENCE_STATUS_OUT= "geofence_status_out";
     public static final String KEY_GEOFENCE_STATUS_PAID= "geofence_status_paid";
 
+    public static final String KEY_GEOFENCE_SHOWMESSAGE= "geofence_showmessage";
     /**
      * Get audio preference
      */
@@ -57,4 +58,14 @@ public class Preferences {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_GEOFENCE_STATUS_TRIGGERED_ID, "");
     }
 
+    public static void setGeofenceShowmessage(Context context, boolean value) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(KEY_GEOFENCE_SHOWMESSAGE, value)
+                .apply();
+    }
+
+    public static boolean getGeofenceShowmessage(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY_GEOFENCE_SHOWMESSAGE, false);
+    }
 }

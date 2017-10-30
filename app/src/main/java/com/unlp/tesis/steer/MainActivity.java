@@ -132,9 +132,6 @@ public class MainActivity extends AppCompatActivity implements
 
     public static LatLng eventZone = null;
 
-    //True when app start or restart
-    public static boolean bShowGeofenceMessage;
-
     /**
      * The list of points of sales markers used in this sample.
      */
@@ -427,8 +424,7 @@ public class MainActivity extends AppCompatActivity implements
         // that since this activity is in the foreground, the service can exit foreground mode.
         bindService(new Intent(this, LocationService.class), mServiceConnection,
                 Context.BIND_AUTO_CREATE);
-
-        bShowGeofenceMessage = true;
+        Preferences.setGeofenceShowmessage(this, true);
     }
 
     @Override
@@ -436,15 +432,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
                 new IntentFilter(Constants.ACTION_BROADCAST));
-        checkGeofenceStatus(Preferences.getGeofenceStatus(this), bShowGeofenceMessage);
-        bShowGeofenceMessage = false;
+        checkGeofenceStatus(Preferences.getGeofenceStatus(this), Preferences.getGeofenceShowmessage(this));
+        Preferences.setGeofenceShowmessage(this, false);
     }
 
-//    @Override
-//    protected void onPause() {
-//        LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
-//        super.onPause();
-//    }
+
 
     @Override
     protected void onStop() {
@@ -455,13 +447,15 @@ public class MainActivity extends AppCompatActivity implements
             unbindService(mServiceConnection);
             mBound = false;
         }
-        Preferences.setGeofenceStatus(this, Preferences.KEY_GEOFENCE_STATUS_OUT);
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
+
+        Preferences.setGeofenceShowmessage(this, true);
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+
 
     }
 
