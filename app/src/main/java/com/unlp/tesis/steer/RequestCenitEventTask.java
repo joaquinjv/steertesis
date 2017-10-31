@@ -1,6 +1,8 @@
 package com.unlp.tesis.steer;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 
 import com.unlp.tesis.steer.utils.MessagesUtils;
@@ -15,6 +17,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
+import java.util.Locale;
 
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
 
@@ -37,19 +41,19 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
 
     protected String doInBackground(String... services) {
         try {
-            /*
-            * Input:
-            * email: String, clave: String, municipio: Long, direccion: String,
-            * tipo: Long, descripcion: Long, observacion: String, fhInicio: String,
-            * agente: Integer, version: String, fileName:String, latitud: String, longitud: String
-            *
-            * consultarTiposAlerta
-            * tiposAlerta: [id : 8 , nombre: Vía publica
-            * descripciones : [ id: 8 , nombre: Bache] ]
-            * */
-            //this.setEvent(services[0]);
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(context, Locale.getDefault());
+            String lat = services[1];
+            String lon = services[2];
+
+            addresses = geocoder.getFromLocation(Double.parseDouble(lat), Double.parseDouble(lon), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String streetNumber = addresses.get(0).getFeatureName();
+            String street = addresses.get(0).getThoroughfare();
             this.setEvent("crearEvento");
-            URL url = new URL("http://163.10.181.26/MLP_CenIT_Service30/services/wssph.aspx");
+            URL url = new URL("http://163.10.181.26/cenitservicestest/services/wssph.aspx");
             String param=//"&agente="+URLEncoder.encode("8","UTF-8")+
                     "version="+URLEncoder.encode("1.0","UTF-8")+
                     "&idUsuario="+URLEncoder.encode("1","UTF-8")+
@@ -58,25 +62,25 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
                     //"&dni="+URLEncoder.encode("34403963","UTF-8")+
                     "&email="+URLEncoder.encode("joaquin547@gmail.com", "UTF-8") +
                     //"&email=joaquin547@gmail.com"+
-                    "&clave="+URLEncoder.encode("4807","UTF-8")+
+                    "&clave="+URLEncoder.encode("5250","UTF-8")+
                     //"&claveActual="+URLEncoder.encode("","UTF-8")+
                     //"&claveNueva="+URLEncoder.encode("","UTF-8")+
                     //"&municipio="+URLEncoder.encode("1","UTF-8")+
-                    "&direccion="+URLEncoder.encode("26707","UTF-8")+
-                    "&calle="+URLEncoder.encode("Calle 26","UTF-8")+
-                    "&numero="+URLEncoder.encode("707","UTF-8")+
-                    "&tipo="+URLEncoder.encode("26","UTF-8")+
-                    "&descripcion="+URLEncoder.encode("167","UTF-8")+
-                    "&observacion=" + URLEncoder.encode("Obsninguna","UTF-8")+
-                    "&fhInicio="+URLEncoder.encode("2017-09-12","UTF-8")+
+                    "&direccion="+URLEncoder.encode(address,"UTF-8")+
+                    "&calle="+URLEncoder.encode(street,"UTF-8")+
+                    "&numero="+URLEncoder.encode(streetNumber,"UTF-8")+
+                    "&tipo="+URLEncoder.encode("8","UTF-8")+
+                    "&descripcion="+URLEncoder.encode(services[3],"UTF-8")+
+                    "&observacion=" + URLEncoder.encode("","UTF-8")+
+                    "&fhInicio="+URLEncoder.encode("2017-10-07","UTF-8")+
                     //"&idEvento="+URLEncoder.encode("1","UTF-8")+
                     //"&tipo="+URLEncoder.encode("1","UTF-8")+
                     //"&descripcion="+URLEncoder.encode("descripshon","UTF-8")+
                     "&nombreMunicipio="+URLEncoder.encode("LaPlata","UTF-8")+
                     //"&codigoMunicipio="+URLEncoder.encode("La Plata","UTF-8")+
                     //"&municipioHabilitado="+URLEncoder.encode("La Plata","UTF-8")+
-                    "&latitud="+URLEncoder.encode("-34.930353","UTF-8")+
-                    "&longitud="+URLEncoder.encode("-57.972417","UTF-8")+
+                    "&latitud="+URLEncoder.encode(lat,"UTF-8")+
+                    "&longitud="+URLEncoder.encode(lon,"UTF-8")+
                     "&op="+URLEncoder.encode(this.getEvent(),"UTF-8");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -94,9 +98,9 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
             System.out.println(response);
             try {
                 JSONObject jObject = new JSONObject(response);
-                jObject.put("name", EVENT_CREATE_ALERT_POTHOLE);
-                jObject.put("lat", "-34.930353");
-                jObject.put("lon", "-57.972417");
+                jObject.put("name", services[0]);
+                jObject.put("lat", lat);
+                jObject.put("lon", lon);
                 this.setObjectResponse(jObject);
             } catch (Exception e) {
                 System.out.println(e);

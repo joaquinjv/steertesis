@@ -17,7 +17,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import static android.app.Activity.RESULT_OK;
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT;
+import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT_ID_TYPE;
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
+import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE_ID_TYPE;
 import static com.unlp.tesis.steer.Constants.E_END_PARKING;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_END_PARKING;
 import static com.unlp.tesis.steer.Constants.E_SPEECH_TO_REPORT_COURT;
@@ -110,6 +112,7 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                             information[0] = EVENT_CREATE_ALERT_POTHOLE;
                             information[1] = String.valueOf(MainActivity.eventZone.latitude);
                             information[2] = String.valueOf(MainActivity.eventZone.longitude);
+                            information[3] = EVENT_CREATE_ALERT_POTHOLE_ID_TYPE;
                         }
                     }
 
@@ -122,6 +125,7 @@ public class SpeechTask extends AsyncTask<String, String, String> {
                             information[0] = EVENT_CREATE_ALERT_COURT;
                             information[1] = String.valueOf(MainActivity.eventZone.latitude);
                             information[2] = String.valueOf(MainActivity.eventZone.longitude);
+                            information[3] = EVENT_CREATE_ALERT_COURT_ID_TYPE;
                         }
                     }
 

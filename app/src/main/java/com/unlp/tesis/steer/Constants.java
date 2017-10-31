@@ -79,6 +79,12 @@ public final class Constants {
     public static final String EVENT_CREATE_ALERT_COURT = "corte";
 
     /**
+     * Harcoded events id
+     */
+    public static final String EVENT_CREATE_ALERT_POTHOLE_ID_TYPE = "16";
+    public static final String EVENT_CREATE_ALERT_COURT_ID_TYPE = "19";
+
+    /**
      * Constants for text recognized in the speech voice
      */
     public static final String[] E_SPEECH_TO_START_PARKING = new String[]{

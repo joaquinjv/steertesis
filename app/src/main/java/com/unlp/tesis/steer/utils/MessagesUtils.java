@@ -134,7 +134,7 @@ public class MessagesUtils {
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.anchor(0.5f, 0.5f);
                 markerOptions.position(latLng);
-                markerOptions.title(response.getString("name"));
+                markerOptions.title(response.getString("name").toUpperCase());
                 //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
                 mMap.addMarker(markerOptions);
@@ -156,16 +156,14 @@ public class MessagesUtils {
     public static void generteGeofenceAlert(Context context, String response) {
         try {
 
-            final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
-                    .setMessage(response);
+            final AlertDialog.Builder dialog =
+                    new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
 
             final String titulo = "Ingresó a zona de estacionamiento medido";
             TextView title = new TextView(context);
             title.setText(titulo);
             title.setGravity(Gravity.CENTER);
             title.setTextSize(30);
-            title.setBackgroundColor(Color.parseColor("#8bc34a"));
-            title.setTextColor(Color.BLACK);
             dialog.setCustomTitle(title);
             final AlertDialog alert = dialog.create();
             alert.show();
