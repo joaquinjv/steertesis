@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -25,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Locale;
 
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT;
@@ -106,6 +109,44 @@ public class HelperUtils {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * It's used for message to start and end the parking
+     * @param context
+     * @param directionsArray
+     */
+    public static void drawEventsInMap(Context context, JSONArray directionsArray) {
+        try {
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            List<Address> addresses = null;
+            for (int i = 0; i < directionsArray.length(); i++) {
+                Object dir = directionsArray.get(i);
+                addresses = geocoder.getFromLocationName(((JSONObject) dir).getString("direction"), 1);
+                LatLng latLng = new LatLng(addresses.get(0).getLatitude(),addresses.get(0).getLongitude());
+                Bitmap origBitmap = null;
+                if (mMap != null){
+                    if (((JSONObject) dir).getString("eventType").equals(EVENT_CREATE_ALERT_POTHOLE)){
+                        origBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo_court);
+                    } else if (((JSONObject) dir).getString("eventType").equals(EVENT_CREATE_ALERT_COURT)){
+                        origBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_logo_gate);
+                    }
+                    int newWidth = 100;
+                    int newHeight = 100;
+                    Bitmap bitmap = Bitmap.createScaledBitmap(origBitmap, newWidth, newHeight, true);
+
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.anchor(0.5f, 0.5f);
+                    markerOptions.position(latLng);
+                    markerOptions.title(((JSONObject) dir).getString("eventType"));
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                    mMap.addMarker(markerOptions);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            String a;
         }
     }
 

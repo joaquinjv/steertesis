@@ -425,6 +425,9 @@ public class MainActivity extends AppCompatActivity implements
         bindService(new Intent(this, LocationService.class), mServiceConnection,
                 Context.BIND_AUTO_CREATE);
         Preferences.setGeofenceShowmessage(this, true);
+
+        // Search the alerts of all users
+        new RequestCenitListOfEventsTask(this).execute();
     }
 
     @Override
