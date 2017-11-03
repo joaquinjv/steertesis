@@ -79,6 +79,7 @@ import java.util.Locale;
 import static com.unlp.tesis.steer.Constants.E_CHARGE_POINT_OF_SALES;
 import static com.unlp.tesis.steer.Constants.E_END_PARKING;
 import static com.unlp.tesis.steer.Constants.E_START_PARKING;
+import static com.unlp.tesis.steer.Constants.E_STATE_OF_PARKING;
 
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -320,7 +321,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     @Override
     public void onBackPressed(){
         if(drawerLayout.isDrawerOpen(Gravity.LEFT)){ //replace this with actual function which returns if the drawer is open
@@ -378,6 +378,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public static void callParkingStatus(Context paramContext){
+        new RequestServiceTask(paramContext).execute(E_STATE_OF_PARKING);
+    }
+
     /**
      * Receiving speech input, call the Task to process de result
      * */
@@ -428,6 +432,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Search the alerts of all users
         new RequestCenitListOfEventsTask(this).execute();
+
     }
 
     @Override
@@ -555,7 +560,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (value) {
             case Preferences.KEY_GEOFENCE_STATUS_IN:
                 parkingButton.setEnabled(true);
-                parkingButton.setImageResource(R.drawable.ic_logo_parking);
+//                parkingButton.setImageResource(R.drawable.ic_logo_parking);
                 if (bShowMessage) {
                     if (Preferences.getGeofenceStatusTriggeredId(this).length() > 0) {
                         mDatabase.child("paidParkingAreas").child(Preferences.getGeofenceStatusTriggeredId(this)).addListenerForSingleValueEvent(
@@ -585,15 +590,15 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case Preferences.KEY_GEOFENCE_STATUS_OUT:
                 parkingButton.setEnabled(false);
-                parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
+//                parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
                 if (getParkingStarted()){
                     setEndParkingForced(Boolean.TRUE);
                     new RequestServiceTask(this).execute(E_END_PARKING);
                 }
                 break;
-            case Preferences.KEY_GEOFENCE_STATUS_PAID:
-                parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
-                break;
+//            case Preferences.KEY_GEOFENCE_STATUS_PAID:
+//                parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
+//                break;
         }
     }
 

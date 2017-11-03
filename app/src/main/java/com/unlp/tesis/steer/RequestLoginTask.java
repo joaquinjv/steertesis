@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 
+import com.unlp.tesis.steer.utils.HelperUtils;
+
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -14,6 +16,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import static com.unlp.tesis.steer.Constants.E_STATE_OF_PARKING;
 
 /**
  * Task to log the user, it do when the app start
@@ -72,6 +76,7 @@ class RequestLoginTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String feed) {
         // TODO: check this.exception
         // TODO: do something with the feed
+        MainActivity.callParkingStatus(context);
     }
 
 

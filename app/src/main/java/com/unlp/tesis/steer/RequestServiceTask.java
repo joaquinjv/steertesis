@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import static com.unlp.tesis.steer.Constants.E_CHARGE_POINT_OF_SALES;
+import static com.unlp.tesis.steer.Constants.E_STATE_OF_PARKING;
 
 /**
  * Task to call one service to start, end o getStatus of user
@@ -79,8 +80,10 @@ class RequestServiceTask extends AsyncTask<String, String, String> {
 
     protected void onPostExecute(String feed) {
         // We call the response for the user when try to get any service
-        if (this.getService()==E_CHARGE_POINT_OF_SALES){
+        if (this.getService()==E_CHARGE_POINT_OF_SALES) {
             HelperUtils.chargePointsOfSales(this.getContext(), this.getObjectResponse());
+        } else if (this.getService()==E_STATE_OF_PARKING) {
+            MessagesUtils.initButtonToPark(this.getContext(), this.getObjectResponse());
         } else {
             MessagesUtils.generteAlertMessage(this.getContext(), this.getObjectResponse());
         }

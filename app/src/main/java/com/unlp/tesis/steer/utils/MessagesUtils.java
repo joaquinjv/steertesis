@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -15,26 +14,19 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.unlp.tesis.steer.MainActivity;
 import com.unlp.tesis.steer.R;
-import com.unlp.tesis.steer.entities.PointOfSale;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Locale;
 
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT;
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
-import static com.unlp.tesis.steer.MainActivity.microphone;
-import static com.unlp.tesis.steer.MainActivity.mCurrLocation;
 import static com.unlp.tesis.steer.MainActivity.mMap;
 import static com.unlp.tesis.steer.MainActivity.parkingButton;
-import static com.unlp.tesis.steer.MainActivity.pointOfSalesMarkers;
 
 /**
  * Simple utils for messages to user
@@ -104,6 +96,25 @@ public class MessagesUtils {
             });
 
             handler.postDelayed(runnable, 7000);
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+    }
+
+    /**
+     * It's used for init the parking button
+     * @param context
+     * @param response
+     */
+    public static void initButtonToPark(Context context, JSONObject response) {
+        try {
+            if (response.getString("errorCode") == "2") {
+                MainActivity.setParkingStarted(Boolean.TRUE);
+                parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
+            } else if (response.getString("errorCode") == "8"){
+                MainActivity.setParkingStarted(Boolean.FALSE);
+                parkingButton.setImageResource(R.drawable.ic_logo_parking);
+            }
         } catch (Exception e) {
             System.out.print(e);
         }

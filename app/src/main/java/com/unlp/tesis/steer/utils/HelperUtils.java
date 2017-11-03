@@ -32,6 +32,7 @@ import java.util.Locale;
 
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_COURT;
 import static com.unlp.tesis.steer.Constants.EVENT_CREATE_ALERT_POTHOLE;
+import static com.unlp.tesis.steer.Constants.E_STATE_OF_PARKING;
 import static com.unlp.tesis.steer.MainActivity.mCurrLocation;
 import static com.unlp.tesis.steer.MainActivity.mMap;
 import static com.unlp.tesis.steer.MainActivity.parkingButton;
