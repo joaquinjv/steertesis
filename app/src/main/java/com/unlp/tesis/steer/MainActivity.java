@@ -633,23 +633,7 @@ public class MainActivity extends AppCompatActivity implements
                         return;
                     }
                     mMap.setMyLocationEnabled(false);
-                    LatLng latLng = new LatLng(actualLocation.getLatitude(), actualLocation.getLongitude());
                     new RequestPositionTask(MainActivity.this, actualLocation).execute();
-                    /*
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    CameraPosition camPos = CameraPosition
-                            .builder(
-                                    mMap.getCameraPosition() // current Camera
-                            )
-                            .bearing(location.getBearing())
-                            .target(latLng)   //Centramos en mi ubicacion
-                            .zoom(19)         //Establecemos el zoom en 19
-                            //.bearing(45)      //Establecemos la orientación con el noreste arriba
-                            .tilt(70)         //Bajamos el punto de vista de la cámara 70 grados
-                            .build();
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
-                    mMap.animateCamera(cameraUpdate);*/
-                    //startGeofence();
                 }
             }
         }

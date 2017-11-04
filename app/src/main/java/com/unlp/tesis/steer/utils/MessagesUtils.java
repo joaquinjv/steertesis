@@ -44,13 +44,13 @@ public class MessagesUtils {
      */
     public static void generteAlertMessage(Context context, JSONObject response) {
         try {
-            if (response.getString("errorCode") == "6") {
+            if (response.getString("errorCode").equals("6")) {
                 Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_PAID);
-            } else if (response.getString("errorCode") == "10") {
+            } else if (response.getString("errorCode").equals("10")) {
                 if (Preferences.getGeofenceStatus(context) == Preferences.KEY_GEOFENCE_STATUS_PAID){
                     Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_IN);
                 }
-            } else if (response.getString("errorCode") == "8") {
+            } else if (response.getString("errorCode").equals("8")) {
                 return;
             }
 
@@ -104,7 +104,7 @@ public class MessagesUtils {
      */
     public static void initButtonToPark(Context context, JSONObject response) {
         try {
-            if (response.getString("errorCode") == "2") {
+            if (response.getString("errorCode").equals("2")) {
                 Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_PAID);
             }
         } catch (Exception e) {
