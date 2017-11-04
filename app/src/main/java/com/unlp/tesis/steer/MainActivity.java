@@ -548,7 +548,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (s.equals(Preferences.KEY_GEOFENCE_STATUS)) {
-            checkGeofenceStatus(Preferences.getGeofenceStatus(this), true);
+            if (Preferences.getGeofencePreviousStatus(this)==Preferences.KEY_GEOFENCE_STATUS_PAID){
+                checkGeofenceStatus(Preferences.getGeofenceStatus(this), false);
+            }else{
+                checkGeofenceStatus(Preferences.getGeofenceStatus(this), true);
+            }
+
         }
     }
 

@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 public class Preferences {
 
     static final String KEY_AUDIO_PREFERENCES= "audio_preferences";
+    public static final String KEY_GEOFENCE_PREVIUOS_STATUS= "geofence_previous_status";
     public static final String KEY_GEOFENCE_STATUS= "geofence_status";
     public static final String KEY_GEOFENCE_STATUS_TRIGGERED_ID= "geofence_status_triggered_id";
 
@@ -37,6 +38,8 @@ public class Preferences {
     }
 
     public static void setGeofenceStatus(Context context, String value) {
+        //Save the last status
+        Preferences.setGeofencePreviousStatus(context, Preferences.getGeofenceStatus(context));
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(KEY_GEOFENCE_STATUS, value)
@@ -46,6 +49,18 @@ public class Preferences {
     public static String getGeofenceStatus(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_GEOFENCE_STATUS, "");
     }
+
+    public static void setGeofencePreviousStatus(Context context, String value) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(KEY_GEOFENCE_PREVIUOS_STATUS, value)
+                .apply();
+    }
+
+    public static String getGeofencePreviousStatus(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_GEOFENCE_PREVIUOS_STATUS, "");
+    }
+
 
     public static void setGeofenceStatusTriggeredId(Context context, String value) {
         PreferenceManager.getDefaultSharedPreferences(context)
