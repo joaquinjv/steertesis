@@ -243,10 +243,10 @@ public class MainActivity extends AppCompatActivity implements
         parkingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public synchronized void onClick(View v) {
-                if (!getParkingStarted()){
-                    startParking();
-                } else {
+                if (Preferences.getGeofenceStatus(getApplicationContext()) == Preferences.KEY_GEOFENCE_STATUS_PAID){
                     endParking();
+                } else {
+                    startParking();
                 }
             }
         });
@@ -560,7 +560,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (value) {
             case Preferences.KEY_GEOFENCE_STATUS_IN:
                 parkingButton.setEnabled(true);
-//                parkingButton.setImageResource(R.drawable.ic_logo_parking);
+                parkingButton.setImageResource(R.drawable.ic_logo_parking);
                 if (bShowMessage) {
                     if (Preferences.getGeofenceStatusTriggeredId(this).length() > 0) {
                         mDatabase.child("paidParkingAreas").child(Preferences.getGeofenceStatusTriggeredId(this)).addListenerForSingleValueEvent(
@@ -590,15 +590,12 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case Preferences.KEY_GEOFENCE_STATUS_OUT:
                 parkingButton.setEnabled(false);
-//                parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
-                if (getParkingStarted()){
-                    setEndParkingForced(Boolean.TRUE);
-                    new RequestServiceTask(this).execute(E_END_PARKING);
-                }
+                parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
+                new RequestServiceTask(this).execute(E_END_PARKING);
                 break;
-//            case Preferences.KEY_GEOFENCE_STATUS_PAID:
-//                parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
-//                break;
+            case Preferences.KEY_GEOFENCE_STATUS_PAID:
+                parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
+                break;
         }
     }
 

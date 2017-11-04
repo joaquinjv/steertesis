@@ -84,8 +84,10 @@ public class GeofenceTransitionsIntentService extends IntentService {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
-                Preferences.setGeofenceStatusTriggeredId(getApplicationContext(), getGeofenceTransitionId(triggeringGeofences));
-                Preferences.setGeofenceStatus(getApplicationContext(), Preferences.KEY_GEOFENCE_STATUS_IN);
+                if (!(Preferences.getGeofenceStatus(getApplicationContext()) == Preferences.KEY_GEOFENCE_STATUS_PAID)){
+                    Preferences.setGeofenceStatusTriggeredId(getApplicationContext(), getGeofenceTransitionId(triggeringGeofences));
+                    Preferences.setGeofenceStatus(getApplicationContext(), Preferences.KEY_GEOFENCE_STATUS_IN);
+                }
             }else{
                 Preferences.setGeofenceStatusTriggeredId(getApplicationContext(), "");
                 Preferences.setGeofenceStatus(getApplicationContext(), Preferences.KEY_GEOFENCE_STATUS_OUT);

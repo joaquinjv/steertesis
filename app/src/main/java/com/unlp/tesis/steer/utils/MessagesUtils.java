@@ -44,18 +44,14 @@ public class MessagesUtils {
      */
     public static void generteAlertMessage(Context context, JSONObject response) {
         try {
-            if ((response.getString("errorCode") == "6") || (response.getString("errorCode") == "10")){
-                if (!MainActivity.getParkingStarted()){
-                    MainActivity.setParkingStarted(Boolean.TRUE);
-                    parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
-                } else if (!MainActivity.getEndParkingForced()){
-                    MainActivity.setParkingStarted(Boolean.FALSE);
-                    parkingButton.setImageResource(R.drawable.ic_logo_parking);
-                } else {
-                    MainActivity.setParkingStarted(Boolean.FALSE);
-                    MainActivity.setEndParkingForced(Boolean.FALSE);
-                    parkingButton.setImageResource(R.drawable.ic_logo_parking_disabled);
+            if (response.getString("errorCode") == "6") {
+                Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_PAID);
+            } else if (response.getString("errorCode") == "10") {
+                if (Preferences.getGeofenceStatus(context) == Preferences.KEY_GEOFENCE_STATUS_PAID){
+                    Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_IN);
                 }
+            } else if (response.getString("errorCode") == "8") {
+                return;
             }
 
             final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
@@ -109,11 +105,7 @@ public class MessagesUtils {
     public static void initButtonToPark(Context context, JSONObject response) {
         try {
             if (response.getString("errorCode") == "2") {
-                MainActivity.setParkingStarted(Boolean.TRUE);
-                parkingButton.setImageResource(R.drawable.ic_logo_parking_green);
-            } else if (response.getString("errorCode") == "8"){
-                MainActivity.setParkingStarted(Boolean.FALSE);
-                parkingButton.setImageResource(R.drawable.ic_logo_parking);
+                Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_PAID);
             }
         } catch (Exception e) {
             System.out.print(e);
