@@ -44,7 +44,13 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,8 +62,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -65,6 +73,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.DirectionsApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.TravelMode;
 import com.unlp.tesis.steer.entities.GeofencePoint;
 import com.unlp.tesis.steer.entities.PaidParkingArea;
 import com.unlp.tesis.steer.entities.PointOfSale;
@@ -72,9 +87,13 @@ import com.unlp.tesis.steer.entities.User;
 import com.unlp.tesis.steer.utils.MessagesUtils;
 import com.unlp.tesis.steer.utils.Preferences;
 
+import org.joda.time.DateTime;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static com.unlp.tesis.steer.Constants.E_CHARGE_POINT_OF_SALES;
 import static com.unlp.tesis.steer.Constants.E_END_PARKING;
@@ -143,7 +162,17 @@ public class MainActivity extends AppCompatActivity implements
 
     private DatabaseReference mDatabase;
 
-    private User userData;
+//    Search direction
+    private TextView txtDirectionFrom;
+    private TextView txtDirectionTo;
+    private final int PLACE_AUTOCOMPLETE_REQUEST_CODE_FROM = 201;
+    private final int PLACE_AUTOCOMPLETE_REQUEST_CODE_TO = 202;
+    public static FloatingActionButton fabDirections = null;
+    private static final int overview = 0;
+    private List<Marker> markers;
+    private String GOOGLE_PLACES_API_KEY = "AIzaSyCuzvdgE19uBTQ48Q3G-YROjl_mFwfSym8";
+
+
     // Monitors the state of the connection to the service.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -214,6 +243,40 @@ public class MainActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        fabDirections = (FloatingActionButton) findViewById(R.id.fabDirections);
+        txtDirectionFrom = (TextView) findViewById(R.id.tv_from);
+        txtDirectionTo = (TextView) findViewById(R.id.tv_to);
+
+        txtDirectionFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickLocation(PLACE_AUTOCOMPLETE_REQUEST_CODE_FROM);
+            }
+        });
+
+        txtDirectionTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickLocation(PLACE_AUTOCOMPLETE_REQUEST_CODE_TO);
+            }
+        });
+
+        fabDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (txtDirectionFrom.length() <= 0) {
+//                    TOAST("Please pick from address");
+                    return;
+                }
+                if (txtDirectionTo.length() <= 0) {
+                    //TOAST("Please pick to address");
+                    return;
+                }
+                getResult();
+            }
+        });
+
 
         //The voice is an big additional in the app, we keep this element in the main activiy
         microphone = (FloatingActionButton) findViewById(R.id.microphone);
@@ -387,10 +450,23 @@ public class MainActivity extends AppCompatActivity implements
      * */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            super.onActivityResult(requestCode, resultCode, data);
 
-        new SpeechTask(this,requestCode,resultCode,data).execute("");
+            new SpeechTask(this, requestCode, resultCode, data).execute("");
+        }
+        else {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Log.i(TAG, "Place: " + place.getName());
+                setResultText(place, requestCode);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+//                showMessage(status.getStatusMessage());
+            }
+        }
     }
+
 
     protected void startParking() {
         new RequestServiceTask(this).execute(E_START_PARKING);
@@ -548,7 +624,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (s.equals(Preferences.KEY_GEOFENCE_STATUS)) {
-            checkGeofenceStatus(Preferences.getGeofenceStatus(this), true);
+            if (Preferences.getGeofencePreviousStatus(this)==Preferences.KEY_GEOFENCE_STATUS_PAID){
+                checkGeofenceStatus(Preferences.getGeofenceStatus(this), false);
+            }else{
+                checkGeofenceStatus(Preferences.getGeofenceStatus(this), true);
+            }
+
         }
     }
 
@@ -748,6 +829,116 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(camPos);//newLatLngZoom(latLng, zoom);
         mMap.animateCamera(cameraUpdate);
+    }
+
+
+    private void getResult() {
+        DirectionsResult results = getDirectionsDetails(txtDirectionTo.getText().toString(), txtDirectionFrom.getText().toString(), TravelMode.DRIVING);
+        if (results != null) {
+            addPolyline(results, mMap);
+            addMarkersToMap(results, mMap);
+            positionCamera(results.routes[overview], mMap);
+        }
+    }
+
+    private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
+        Marker markerSrc = mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].startLocation.lat, results.routes[overview].legs[overview].startLocation.lng)).title(results.routes[overview].legs[overview].startAddress));
+        Marker markerDes = mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].endLocation.lat, results.routes[overview].legs[overview].endLocation.lng)).title(results.routes[overview].legs[overview].endAddress).snippet(getEndLocationTitle(results)));
+        markers = new ArrayList<>();
+        markers.add(markerSrc);
+        markers.add(markerDes);
+    }
+
+
+    private void positionCamera(DirectionsRoute route, GoogleMap mMap) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 150);
+        mMap.animateCamera(cu);
+
+    }
+
+
+    private void addPolyline(DirectionsResult results, GoogleMap mMap) {
+        mMap.clear();
+        List<LatLng> decodedPath = PolyUtil.decode(results.routes[overview].overviewPolyline.getEncodedPath());
+        mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
+    }
+
+    private String getEndLocationTitle(DirectionsResult results) {
+        return "Time :" + results.routes[overview].legs[overview].duration.humanReadable + " Distance :" + results.routes[overview].legs[overview].distance.humanReadable;
+    }
+
+    private GeoApiContext getGeoContext() {
+        GeoApiContext geoApiContext = new GeoApiContext();
+        return geoApiContext
+                .setQueryRateLimit(3)
+                .setApiKey(GOOGLE_PLACES_API_KEY)
+                .setConnectTimeout(100, TimeUnit.SECONDS)
+                .setReadTimeout(100, TimeUnit.SECONDS)
+                .setWriteTimeout(100, TimeUnit.SECONDS);
+    }
+
+
+    private DirectionsResult getDirectionsDetails(String origin, String destination, TravelMode mode) {
+        DateTime now = new DateTime();
+        try {
+            return DirectionsApi.newRequest(getGeoContext())
+                    .mode(mode)
+                    .origin(origin)
+                    .destination(destination)
+                    .departureTime(now)
+                    .await();
+        } catch (ApiException e) {
+            e.printStackTrace();
+//            showMessage(e.getMessage());
+            return null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+//            showMessage(e.getMessage());
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+//            showMessage(e.getMessage());
+            return null;
+        }
+    }
+
+    private void pickLocation(int requestCode) {
+        try {
+
+            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                    .setCountry("ar")
+                    .build();
+
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            .setFilter(typeFilter)
+                            .build(this);
+            startActivityForResult(intent, requestCode);
+        } catch (GooglePlayServicesRepairableException e) {
+//            showMessage(e.getMessage());
+            // TODO: Handle the error.
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // TODO: Handle the error.
+//            showMessage(e.getMessage());
+        }
+    }
+
+    private void setResultText(Place place, int requestCode) {
+        switch (requestCode) {
+            case PLACE_AUTOCOMPLETE_REQUEST_CODE_FROM:
+
+                txtDirectionFrom.setText(place.getAddress());
+                break;
+            case PLACE_AUTOCOMPLETE_REQUEST_CODE_TO:
+
+                txtDirectionTo.setText(place.getAddress());
+                break;
+        }
     }
 
     public String getToken() {

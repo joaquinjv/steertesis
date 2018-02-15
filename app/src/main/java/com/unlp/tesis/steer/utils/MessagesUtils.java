@@ -48,6 +48,7 @@ public class MessagesUtils {
                 Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_PAID);
             } else if (response.getString("errorCode").equals("10")) {
                 if (Preferences.getGeofenceStatus(context) == Preferences.KEY_GEOFENCE_STATUS_PAID){
+                    Preferences.setGeofenceShowmessage(context, false);
                     Preferences.setGeofenceStatus(context, Preferences.KEY_GEOFENCE_STATUS_IN);
                 }
             } else if (response.getString("errorCode").equals("8")) {
@@ -159,14 +160,16 @@ public class MessagesUtils {
     public static void generteGeofenceAlert(Context context, String response) {
         try {
 
-            final AlertDialog.Builder dialog =
-                    new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(context)
+                    .setMessage(response);
 
             final String titulo = "Ingresó a zona de estacionamiento medido";
             TextView title = new TextView(context);
             title.setText(titulo);
             title.setGravity(Gravity.CENTER);
             title.setTextSize(30);
+            title.setBackgroundColor(Color.parseColor("#8bc34a"));
+            title.setTextColor(Color.BLACK);
             dialog.setCustomTitle(title);
             final AlertDialog alert = dialog.create();
             alert.show();

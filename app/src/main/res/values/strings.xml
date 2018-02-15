@@ -57,8 +57,10 @@
 
 
     <string name="seccion_1">Sección 1</string>
-    <string name="otras_opciones">Otras opciones</string>
+    <string name="setting">Configuración</string>
     <string name="menu_audio_preference">Audio</string>
+    <string name="share_position">Compartir ubicación</string>
+    <string name="search_direction">Buscar dirección</string>
     <string name="usuario">Usuario</string>
     <string name="menu_abierto">Menu Abierto</string>
     <string name="menu_cerrado">Menu Cerrado</string>
