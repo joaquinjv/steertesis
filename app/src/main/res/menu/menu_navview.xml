@@ -4,13 +4,21 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_plate"
-            android:icon="@drawable/ic_menu"
-            android:title=""/>
+            android:icon="@drawable/car_license_plate"
+            android:title=""
+            app:showAsAction="ifRoom|withText" />
+        <item
+            android:id="@+id/menu_share_position"
+            android:title="@string/share_position"
+            app:showAsAction="ifRoom"/>
+        <item
+            android:id="@+id/menu_search_direction"
+            android:title="@string/search_direction" />
     </group>
 
     <item
         android:id="@+id/navigation_subheader"
-        android:title="@string/otras_opciones">
+        android:title="@string/setting">
         <menu>
             <item
                 android:id="@+id/menu_audio_preference_switch"
