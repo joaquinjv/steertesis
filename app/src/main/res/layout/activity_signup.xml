@@ -18,7 +18,13 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -30,8 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginBottom="30dp"
-            android:text="Sign up"
+            android:layout_marginBottom="40dp"
+            android:text="Registrate"
             android:textSize="25sp"/>
 
         <android.support.design.widget.TextInputLayout
@@ -135,7 +141,7 @@
             android:textColor="@color/btn_register"
             android:textSize="15sp" />
     </LinearLayout>
-
+    </ScrollView>
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="30dp"

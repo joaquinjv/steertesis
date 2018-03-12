@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -41,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -793,6 +795,14 @@ public class MainActivity extends AppCompatActivity implements
 //                fragment = new Fragment1();
 //                fragmentTransaction = true;
                 break;
+            case R.id.menu_search_direction:
+                CoordinatorLayout searchPanel = (CoordinatorLayout) findViewById(R.id.search_panel);
+                if(searchPanel.getVisibility() == View.VISIBLE) {
+                    searchPanel.setVisibility(View.INVISIBLE);
+                }else{
+                    searchPanel.setVisibility(View.VISIBLE);
+                }
+                break;
         }
 
 //        if(fragmentTransaction) {
@@ -837,7 +847,7 @@ public class MainActivity extends AppCompatActivity implements
         if (results != null) {
             addPolyline(results, mMap);
             addMarkersToMap(results, mMap);
-            positionCamera(results.routes[overview], mMap);
+            //positionCamera(results.routes[overview], mMap);
         }
     }
 
@@ -850,16 +860,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private void positionCamera(DirectionsRoute route, GoogleMap mMap) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : markers) {
-            builder.include(marker.getPosition());
-        }
-        LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 150);
-        mMap.animateCamera(cu);
-
-    }
+//    private void positionCamera(DirectionsRoute route, GoogleMap mMap) {
+//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//        for (Marker marker : markers) {
+//            builder.include(marker.getPosition());
+//        }
+//        LatLngBounds bounds = builder.build();
+//        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 150);
+//        mMap.animateCamera(cu);
+//
+//    }
 
 
     private void addPolyline(DirectionsResult results, GoogleMap mMap) {
