@@ -1,6 +1,7 @@
 package com.unlp.tesis.steer;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -70,6 +71,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -85,6 +87,7 @@ import com.google.maps.model.TravelMode;
 import com.unlp.tesis.steer.entities.GeofencePoint;
 import com.unlp.tesis.steer.entities.PaidParkingArea;
 import com.unlp.tesis.steer.entities.PointOfSale;
+import com.unlp.tesis.steer.entities.Position;
 import com.unlp.tesis.steer.entities.User;
 import com.unlp.tesis.steer.utils.MessagesUtils;
 import com.unlp.tesis.steer.utils.Preferences;
@@ -93,8 +96,10 @@ import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.unlp.tesis.steer.Constants.E_CHARGE_POINT_OF_SALES;
@@ -159,6 +164,11 @@ public class MainActivity extends AppCompatActivity implements
      */
     public static List<Marker> pointOfSalesMarkers = new ArrayList<Marker>();
 
+    /*
+    * Hash map of marker by the followed userId
+    */
+    Map<String, Object> followedMarkers = new HashMap<>();
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -174,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements
     private List<Marker> markers;
     private String GOOGLE_PLACES_API_KEY = "AIzaSyCuzvdgE19uBTQ48Q3G-YROjl_mFwfSym8";
 
+    private static FirebaseUser user;
 
     // Monitors the state of the connection to the service.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -208,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements
         //get firebase auth instance
         mAuth = FirebaseAuth.getInstance();
         //get current user
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -365,25 +376,55 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
 
-        //SoloUnaVez();
+//        SoloUnaVez();
     }
 
     public void SoloUnaVez (){
 
-        List<GeofencePoint> lg = new ArrayList<GeofencePoint>();
-        String newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
-        lg.add(new GeofencePoint(50,-34.9428192,-57.9656825, newPPAKey));
-        lg.add(new GeofencePoint(50,-34.9419671,-57.9646975, newPPAKey));
-        lg.add(new GeofencePoint(50,-34.9410528,-57.9637056, newPPAKey));
-        PaidParkingArea zonaPedro = new PaidParkingArea("PEDRO", 5, 8, 20, lg);
-        mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaPedro);
+//        List<GeofencePoint> lg = new ArrayList<GeofencePoint>();
+//        String newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
+//        lg.add(new GeofencePoint(50,-34.9428192,-57.9656825, newPPAKey));
+//        lg.add(new GeofencePoint(50,-34.9419671,-57.9646975, newPPAKey));
+//        lg.add(new GeofencePoint(50,-34.9410528,-57.9637056, newPPAKey));
+//        PaidParkingArea zonaPedro = new PaidParkingArea("PEDRO", 5, 8, 20, lg);
+//        mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaPedro);
+//
+//        List<GeofencePoint> lg2 = new ArrayList<GeofencePoint>();
+//        newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
+//        lg2.add(new GeofencePoint(50,-34.9306643,-57.9727699, newPPAKey));
+//        PaidParkingArea zonaJoaco = new PaidParkingArea("JOACO", 5, 8, 20, lg2);
+//        mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaJoaco);
 
-        List<GeofencePoint> lg2 = new ArrayList<GeofencePoint>();
-        newPPAKey = mDatabase.child("paidParkingAreas").push().getKey();
-        lg2.add(new GeofencePoint(50,-34.9306643,-57.9727699, newPPAKey));
-        PaidParkingArea zonaJoaco = new PaidParkingArea("JOACO", 5, 8, 20, lg2);
-        mDatabase.child("paidParkingAreas").child(newPPAKey).setValue(zonaJoaco);
-
+//
+//        DatabaseReference dbRef =
+//                FirebaseDatabase.getInstance().getReference().child("users");
+//        dbRef.addValueEventListener(
+//                new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        Map<String, Object> childUpdates = new HashMap<>();
+//                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                            Log.e(TAG, "dataChange reading db");
+//                            // Get Post object and use the values to update the UI
+//                            User pos = ds.getValue(User.class);
+//                            String s = pos.getName();
+//                            String a= "joaquin";
+//                            String b = "Pedro";
+//                            String c = ds.getKey();
+//                            if (s.equalsIgnoreCase(a) || s.equalsIgnoreCase(b))
+//                            {
+//                                childUpdates.put("/friends/" + c , true);
+//                            }
+//                        }
+//                        mDatabase.child("users").child(user.getUid()).updateChildren(childUpdates);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                        Log.e(TAG, "Error reading db");
+//                    }
+//                }
+//        );
     }
 
     @Override
@@ -647,26 +688,27 @@ public class MainActivity extends AppCompatActivity implements
                 if (bShowMessage) {
                     if (Preferences.getGeofenceStatusTriggeredId(this).length() > 0) {
                         mDatabase.child("paidParkingAreas").child(Preferences.getGeofenceStatusTriggeredId(this)).addListenerForSingleValueEvent(
-                                new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        // Get paidParkingArea
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    // Get paidParkingArea
 
-                                        PaidParkingArea ppa = dataSnapshot.getValue(PaidParkingArea.class);
+                                    PaidParkingArea ppa = dataSnapshot.getValue(PaidParkingArea.class);
+                                    Log.e(TAG, "read ppa");
+                                    if (ppa != null) {
+                                        // User is null, error out
                                         Log.e(TAG, "read ppa");
-                                        if (ppa != null) {
-                                            // User is null, error out
-                                            Log.e(TAG, "read ppa");
-                                            Log.e(TAG, ppa.toString());
-                                            GenerteGeofenceAlert(ppa.toString());
-                                        }                                     // [END_EXCLUDE]
-                                    }
+                                        Log.e(TAG, ppa.toString());
+                                        GenerteGeofenceAlert(ppa.toString());
+                                    }                                     // [END_EXCLUDE]
+                                }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                                    }
-                                });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                                }
+                            }
+                        );
                     }
                 }
                 //MessagesUtils.generteGeofenceAlert(this, Preferences.getGeofenceStatusMessage(this));
@@ -696,10 +738,13 @@ public class MainActivity extends AppCompatActivity implements
             if (actualLocation == null)
             {
                 actualLocation = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
+
                 UpdateCamera();
+                mDatabase.child("users").child(user.getUid()).child("actualPosition").setValue(new Position(actualLocation.getLatitude(), actualLocation.getLongitude()));
             }
             else {
                 actualLocation = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
+                mDatabase.child("users").child(user.getUid()).child("actualPosition").setValue(new Position(actualLocation.getLatitude(), actualLocation.getLongitude()));
             }
 
             if (actualLocation != null) {
@@ -732,7 +777,8 @@ public class MainActivity extends AppCompatActivity implements
         mMap.setMinZoomPreference(16.0f);
         UiSettings uiSettings = mMap.getUiSettings();
         uiSettings.setCompassEnabled(false);
-        this.setPointOfSales();
+        this.SetPointOfSales();
+        this.SetFollowed();
 
         //PARA PRUEBA
         //populateGeofenceMarker();
@@ -781,8 +827,74 @@ public class MainActivity extends AppCompatActivity implements
         );
     }
 
-    private void setPointOfSales() {
+    private void SetPointOfSales() {
         new RequestServiceTask(this).execute(E_CHARGE_POINT_OF_SALES);
+    }
+
+    private void SetFollowed() {
+//        DatabaseReference dbRef =
+//                FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("followed");
+//        dbRef.addValueEventListener(
+        mDatabase.child("users").child(user.getUid()).child("followed").addChildEventListener(
+                new ChildEventListener() {
+
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        ReadUser(dataSnapshot.getKey());
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        ReadUser(dataSnapshot.getKey());
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                    public void ReadUser(final String userId) {
+                        mDatabase.child("users").child(userId).addValueEventListener(
+                                new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        User userFollowing = dataSnapshot.getValue(User.class);
+
+                                        if (followedMarkers.containsKey(userId)){
+                                            ((Marker) followedMarkers.get(userId)).setPosition(new LatLng(userFollowing.getActualPosition().getLatitude(), userFollowing.getActualPosition().getLongitude()));
+                                        }
+                                        else {
+                                            MarkerOptions markerOptions = new MarkerOptions()
+                                                    .position(new LatLng(userFollowing.getActualPosition().getLatitude(), userFollowing.getActualPosition().getLongitude()))
+                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                                                    .title(userFollowing.getName())
+                                                    .snippet(userFollowing.getPlate());
+                                            Marker m = mMap.addMarker(markerOptions);
+                                            followedMarkers.put(userId, m);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                                    }
+                                }
+                        );
+                    }
+
+                }
+        );
     }
 
     public boolean navigationItemSelected(MenuItem menuItem) {
@@ -803,6 +915,9 @@ public class MainActivity extends AppCompatActivity implements
                     searchPanel.setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.menu_share_position:
+                this.ShowFriends();
+                break;
         }
 
 //        if(fragmentTransaction) {
@@ -817,6 +932,12 @@ public class MainActivity extends AppCompatActivity implements
         drawerLayout.closeDrawers();
 
         return true;
+    }
+
+    private void ShowFriends()
+    {
+        Intent intent = new Intent(MainActivity.this, FollowersActivity.class);
+        startActivity(intent);
     }
 
     public void OpenNavigationView()

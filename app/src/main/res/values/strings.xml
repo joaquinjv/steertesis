@@ -55,8 +55,6 @@
     <string name="forgot_password_msg">Para restaurar tu contraseña, ingresa tu dirección de correo electrónico.</string>
 
 
-
-
     <string name="seccion_1">Sección 1</string>
     <string name="setting">Configuración</string>
     <string name="menu_audio_preference">Audio</string>
@@ -65,4 +63,5 @@
     <string name="usuario">Usuario</string>
     <string name="menu_abierto">Menu Abierto</string>
     <string name="menu_cerrado">Menu Cerrado</string>
+    <string name="title_activity_followers">FollowersActivity</string>
 </resources>
