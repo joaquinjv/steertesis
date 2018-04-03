@@ -6,10 +6,21 @@ android:layout_height="match_parent"
 android:orientation="horizontal"
 tools:context=".FollowersActivity" >
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarFollowers"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
     <ListView
         android:id="@+id/list_followers"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="66dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabFollowersOk"

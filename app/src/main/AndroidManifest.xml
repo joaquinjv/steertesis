@@ -62,7 +62,8 @@
         <activity
             android:name=".FollowersActivity"
             android:label="@string/title_activity_followers"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>
