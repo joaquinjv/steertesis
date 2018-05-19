@@ -53,7 +53,7 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
             String streetNumber = addresses.get(0).getFeatureName();
             String street = addresses.get(0).getThoroughfare();
             this.setEvent("crearEvento");
-            URL url = new URL("http://163.10.181.26/cenitservicestest/services/wssph.aspx");
+            URL url = new URL("http://163.10.181.26/MN_Cenit_Service30/services/wssph.aspx");
             String param=//"&agente="+URLEncoder.encode("8","UTF-8")+
                     "version="+URLEncoder.encode("1.0","UTF-8")+
                     "&idUsuario="+URLEncoder.encode("1","UTF-8")+
@@ -62,7 +62,7 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
                     //"&dni="+URLEncoder.encode("34403963","UTF-8")+
                     "&email="+URLEncoder.encode("joaquin547@gmail.com", "UTF-8") +
                     //"&email=joaquin547@gmail.com"+
-                    "&clave="+URLEncoder.encode("4010","UTF-8")+
+                    "&clave="+URLEncoder.encode("7b5e","UTF-8")+
                     //"&claveActual="+URLEncoder.encode("","UTF-8")+
                     //"&claveNueva="+URLEncoder.encode("","UTF-8")+
                     //"&municipio="+URLEncoder.encode("1","UTF-8")+
