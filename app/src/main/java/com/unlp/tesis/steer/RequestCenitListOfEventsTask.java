@@ -45,13 +45,13 @@ class RequestCenitListOfEventsTask extends AsyncTask<String, String, String> {
 
     protected String doInBackground(String... services) {
         try {
-            URL url = new URL("http://163.10.181.26/cenitservicestest/services/wssph.aspx");
+            URL url = new URL("http://163.10.181.26/MN_Cenit_Service30/services/wssph.aspx");
             String param="version="+URLEncoder.encode("1.0","UTF-8")+
                     "&idUsuario="+URLEncoder.encode("1","UTF-8")+
                     "&nombre="+URLEncoder.encode("joaquin","UTF-8")+
                     "&apellido="+URLEncoder.encode("joaquin","UTF-8")+
                     "&email="+URLEncoder.encode("joaquin547@gmail.com", "UTF-8") +
-                    "&clave="+URLEncoder.encode("4010","UTF-8")+
+                    "&clave="+URLEncoder.encode("7b5e","UTF-8")+
                     "&tipo="+URLEncoder.encode("8","UTF-8")+
                     "&observacion=" + URLEncoder.encode("","UTF-8")+
                     "&fhInicio="+URLEncoder.encode("2017-10-07","UTF-8")+
