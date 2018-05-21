@@ -56,7 +56,7 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
             URL url = new URL("http://163.10.181.26/MN_Cenit_Service30/services/wssph.aspx");
             String param=//"&agente="+URLEncoder.encode("8","UTF-8")+
                     "version="+URLEncoder.encode("1.0","UTF-8")+
-                    "&idUsuario="+URLEncoder.encode("1","UTF-8")+
+                    "&idUsuario="+URLEncoder.encode("313","UTF-8")+
                     "&nombre="+URLEncoder.encode("joaquin","UTF-8")+
                     "&apellido="+URLEncoder.encode("joaquin","UTF-8")+
                     //"&dni="+URLEncoder.encode("34403963","UTF-8")+
@@ -65,18 +65,18 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
                     "&clave="+URLEncoder.encode("7b5e","UTF-8")+
                     //"&claveActual="+URLEncoder.encode("","UTF-8")+
                     //"&claveNueva="+URLEncoder.encode("","UTF-8")+
-                    //"&municipio="+URLEncoder.encode("1","UTF-8")+
+                    "&municipio="+URLEncoder.encode("1","UTF-8")+
                     "&direccion="+URLEncoder.encode(address,"UTF-8")+
                     "&calle="+URLEncoder.encode(street,"UTF-8")+
                     "&numero="+URLEncoder.encode(streetNumber,"UTF-8")+
-                    "&tipo="+URLEncoder.encode(services[3],"UTF-8")+
+                    "&tipo="+URLEncoder.encode("8","UTF-8")+
                     "&descripcion="+URLEncoder.encode(services[3],"UTF-8")+
                     "&observacion=" + URLEncoder.encode("","UTF-8")+
                     "&fhInicio="+URLEncoder.encode("2017-10-07","UTF-8")+
-                    //"&idEvento="+URLEncoder.encode("1","UTF-8")+
+                    //"&idEvento="+URLEncoder.encode("8","UTF-8")+
                     //"&tipo="+URLEncoder.encode("1","UTF-8")+
                     //"&descripcion="+URLEncoder.encode("descripshon","UTF-8")+
-                    "&nombreMunicipio="+URLEncoder.encode("LaPlata","UTF-8")+
+                    "&nombreMunicipio="+URLEncoder.encode("Necochea","UTF-8")+
                     //"&codigoMunicipio="+URLEncoder.encode("La Plata","UTF-8")+
                     //"&municipioHabilitado="+URLEncoder.encode("La Plata","UTF-8")+
                     "&latitud="+URLEncoder.encode(lat,"UTF-8")+
