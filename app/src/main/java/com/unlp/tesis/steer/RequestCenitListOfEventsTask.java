@@ -47,17 +47,19 @@ class RequestCenitListOfEventsTask extends AsyncTask<String, String, String> {
         try {
             URL url = new URL("http://163.10.181.26/MN_Cenit_Service30/services/wssph.aspx");
             String param="version="+URLEncoder.encode("1.0","UTF-8")+
-                    "&idUsuario="+URLEncoder.encode("1","UTF-8")+
-                    "&nombre="+URLEncoder.encode("joaquin","UTF-8")+
-                    "&apellido="+URLEncoder.encode("joaquin","UTF-8")+
+                    //"&idUsuario="+URLEncoder.encode("313","UTF-8")+
+                    //"&nombre="+URLEncoder.encode("joaquin","UTF-8")+
+                    //"&apellido="+URLEncoder.encode("joaquin","UTF-8")+
                     "&email="+URLEncoder.encode("joaquin547@gmail.com", "UTF-8") +
                     "&clave="+URLEncoder.encode("7b5e","UTF-8")+
-                    "&tipo="+URLEncoder.encode("8","UTF-8")+
-                    "&observacion=" + URLEncoder.encode("","UTF-8")+
-                    "&fhInicio="+URLEncoder.encode("2017-10-07","UTF-8")+
-                    "&codigoMunicipio="+URLEncoder.encode("8","UTF-8")+
-                    "&nombreMunicipio="+URLEncoder.encode("LaPlata","UTF-8")+
-                    "&municipioHabilitado="+URLEncoder.encode("true","UTF-8")+
+                    //"&tipo="+URLEncoder.encode("8","UTF-8")+
+                    //"&observacion=" + URLEncoder.encode("","UTF-8")+
+                    "&agente=" + URLEncoder.encode("8","UTF-8")+
+                    //"&fhInicio="+URLEncoder.encode("2017-10-07","UTF-8")+
+                    "&municipio="+URLEncoder.encode("1","UTF-8")+
+                    //"&codigoMunicipio="+URLEncoder.encode("8","UTF-8")+
+                    //"&nombreMunicipio="+URLEncoder.encode("Necochea","UTF-8")+
+                    //"&municipioHabilitado="+URLEncoder.encode("true","UTF-8")+
                     "&pagina="+URLEncoder.encode("1","UTF-8")+
                     "&cantidad="+URLEncoder.encode("10","UTF-8")+
                     "&op="+URLEncoder.encode("listarEventos","UTF-8");
@@ -89,8 +91,7 @@ class RequestCenitListOfEventsTask extends AsyncTask<String, String, String> {
         } catch (IOException e) {
             System.out.println("IOException!");
             System.out.println(e.getMessage());
-        }
-        return "";
+        }        return "";
     }
 
     protected void onPostExecute(String feed) {
