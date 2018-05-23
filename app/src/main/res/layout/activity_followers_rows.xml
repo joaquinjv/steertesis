@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <!--<CheckBox-->
-        <!--android:id="@+id/rowCheckBox"-->
+    <!--<CheckBox-->Navegación
+    <!--android:id="@+id/rowCheckBox"-->
         <!--android:layout_width="60dp"-->
         <!--android:layout_height="60dp"-->
         <!--android:button="@drawable/custom_checkbox"-->
@@ -25,6 +25,7 @@
         android:paddingRight="5dp" />
 
     <TextView
+
         android:id="@+id/rowTextView"
         android:layout_width="wrap_content"
         android:layout_height="60dp"

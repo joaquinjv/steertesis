@@ -744,7 +744,9 @@ public class MainActivity extends AppCompatActivity implements
             }
             else {
                 actualLocation = intent.getParcelableExtra(Constants.EXTRA_LOCATION);
+                UpdateCamera();
                 mDatabase.child("users").child(user.getUid()).child("actualPosition").setValue(new Position(actualLocation.getLatitude(), actualLocation.getLongitude()));
+
             }
 
             if (actualLocation != null) {

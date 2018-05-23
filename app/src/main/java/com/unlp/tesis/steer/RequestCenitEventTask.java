@@ -17,6 +17,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,6 +48,8 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
             geocoder = new Geocoder(context, Locale.getDefault());
             String lat = services[1];
             String lon = services[2];
+            Date dFechaInicio = new Date();
+            String sFechaInicio = new SimpleDateFormat("yyyy-MM-dd").format(dFechaInicio);
 
             addresses = geocoder.getFromLocation(Double.parseDouble(lat), Double.parseDouble(lon), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
@@ -72,7 +76,7 @@ class RequestCenitEventTask extends AsyncTask<String, String, String> {
                     "&tipo="+URLEncoder.encode("8","UTF-8")+
                     "&descripcion="+URLEncoder.encode(services[3],"UTF-8")+
                     "&observacion=" + URLEncoder.encode("","UTF-8")+
-                    "&fhInicio="+URLEncoder.encode("2017-10-07","UTF-8")+
+                    "&fhInicio="+URLEncoder.encode(sFechaInicio,"UTF-8")+
                     //"&idEvento="+URLEncoder.encode("8","UTF-8")+
                     //"&tipo="+URLEncoder.encode("1","UTF-8")+
                     //"&descripcion="+URLEncoder.encode("descripshon","UTF-8")+
