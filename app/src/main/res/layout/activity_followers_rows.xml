@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!--<CheckBox-->Navegación
+    <!--android:id="@+id/rowCheckBox"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:button="@drawable/custom_checkbox"-->
+        <!--android:text=""-->
+        <!--android:textSize="50dp" />-->
+    <CheckBox
+        android:id="@+id/rowCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:scaleX="2"
+        android:scaleY="2"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingRight="5dp" />
+
+    <TextView
+
+        android:id="@+id/rowTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:textSize="28dp"/>
+
+    <TextView
+        android:id="@+id/rowTextViewHidden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+</LinearLayout>

@@ -75,14 +75,14 @@ public final class Constants {
     public static final String E_END_PARKING = "finalizarEstacionamiento";
     public static final String E_STATE_OF_PARKING= "consultarEstado";
     public static final String E_CHARGE_POINT_OF_SALES= "comerciosAdheridos";
-    public static final String EVENT_CREATE_ALERT_POTHOLE = "Bacheo";
-    public static final String EVENT_CREATE_ALERT_COURT = "Manifestación";
+    public static final String EVENT_CREATE_ALERT_POTHOLE = "Bache";
+    public static final String EVENT_CREATE_ALERT_COURT = "Vehiculo abandonado";
 
     /**
      * Harcoded events id
      */
-    public static final String EVENT_CREATE_ALERT_POTHOLE_ID_TYPE = "3";
-    public static final String EVENT_CREATE_ALERT_COURT_ID_TYPE = "2";
+    public static final String EVENT_CREATE_ALERT_POTHOLE_ID_TYPE = "16";
+    public static final String EVENT_CREATE_ALERT_COURT_ID_TYPE = "20";
 
     /**
      * Constants for text recognized in the speech voice

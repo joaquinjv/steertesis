@@ -35,25 +35,24 @@
 
     <string name="geofence_transition_notification_text">Click notification to return to app</string>
 
-    <string name="action_sign_in_short">Register</string>
+    <string name="action_sign_in_short">Registrarse</string>
     <string name="email">Email</string>
     <string name="name">Nombre</string>
     <string name="plate">Patente</string>
-    <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
-    <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="minimum_password">Contraseña demasiado corta, ingrese al menos 6 caracteres</string>
+    <string name="auth_failed">Email o contraseña incorrecto</string>
+    <string name="title_activity_login">Iniciar sesión</string>
     <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
+    <string name="hint_password">Contraseña</string>
     <string name="btn_login">LOGIN</string>
-    <string name="btn_link_to_login">already registered. login me!</string>
-    <string name="btn_forgot_password">Forgot your password?</string>
-    <string name="btn_reset_password">Reset Password</string>
-    <string name="btn_back"><![CDATA[<< Back]]></string>
-    <string name="btn_sign_out">Sign Out</string>
-    <string name="lbl_forgot_password">Forgot password?</string>
-    <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
-
-
+    <string name="btn_link_to_login">Ya estoy registrado!. Iniciar sesión</string>
+    <string name="btn_link_to_singup">No tienes cuenta?. Registrate</string>
+    <string name="btn_forgot_password">Olvidaste tu contraseña?</string>
+    <string name="btn_reset_password">Restaurar contraseña</string>
+    <string name="btn_back"><![CDATA[<< Volver]]></string>
+    <string name="btn_sign_out">Cerrar sesion</string>
+    <string name="lbl_forgot_password">Olvidaste tu contraseña?</string>
+    <string name="forgot_password_msg">Para restaurar tu contraseña, ingresa tu dirección de correo electrónico.</string>
 
 
     <string name="seccion_1">Sección 1</string>
@@ -64,4 +63,5 @@
     <string name="usuario">Usuario</string>
     <string name="menu_abierto">Menu Abierto</string>
     <string name="menu_cerrado">Menu Cerrado</string>
+    <string name="title_activity_followers">FollowersActivity</string>
 </resources>
